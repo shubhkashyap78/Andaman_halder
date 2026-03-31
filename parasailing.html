@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parasailing in Andaman - Andaman Tours</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root { --black: #0a0a0a; --dark: #1a1a1a; --mid: #555; --light: #999; --border: #e8e4df; --accent: #c8a96e; --accent-light: #f5efe4; --white: #ffffff; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+  .cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: all 0.4s ease; opacity: 0.6; }
+  .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.4s, padding 0.4s; }
+  nav.scrolled { border-color: var(--border); padding: 16px 60px; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 1px; color: var(--black); text-decoration: none; cursor: pointer; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 40px; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); }
+  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--black) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 2px; }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--accent) !important; }
+  .hero { min-height: 70vh; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; background: var(--white); padding: 0 60px 80px; margin-top: 80px; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(200,169,110,0.08) 0%, transparent 70%); }
+  .hero-line { position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: var(--accent-light); clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%); z-index: 0; }
+  .hero-img { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 35%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; z-index: 1; box-shadow: 0 40px 80px rgba(0,0,0,0.12); animation: heroFloat 6s ease-in-out infinite; }
+  @keyframes heroFloat { 0%,100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-12px); } }
+  .hero-content { position: relative; z-index: 2; max-width: 500px; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 28px; }
+  .hero-tag::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 5vw, 72px); font-weight: 300; line-height: 1.1; color: var(--black); margin-bottom: 24px; }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-desc { font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--mid); margin-bottom: 32px; }
+  .activity-section { padding: 100px 60px; background: var(--white); }
+  .activity-header { text-align: center; margin-bottom: 80px; }
+  .activity-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 16px; display: inline-block; }
+  .activity-title { font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300; color: var(--black); margin-bottom: 20px; }
+  .activity-title em { font-style: italic; color: var(--accent); }
+  .activity-desc { font-size: 14px; color: var(--mid); max-width: 700px; margin: 0 auto; line-height: 1.8; }
+  .activity-details { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin: 80px 0; }
+  .detail-box { background: var(--accent-light); padding: 40px; border-radius: 4px; text-align: center; }
+  .detail-icon { font-size: 42px; margin-bottom: 16px; display: block; }
+  .detail-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+  .detail-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--black); }
+  .pricing-section { background: var(--accent-light); padding: 60px; border-radius: 4px; margin: 60px 0; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 40px; }
+  .price-card { background: var(--white); padding: 40px; border-radius: 4px; text-align: center; border: 1px solid var(--border); transition: all 0.4s; }
+  .price-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); border-color: var(--accent); }
+  .price-type { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; font-weight: 600; }
+  .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 600; color: var(--black); margin-bottom: 8px; }
+  .price-person { font-size: 12px; color: var(--mid); margin-bottom: 24px; }
+  .price-list { text-align: left; margin: 24px 0; font-size: 13px; line-height: 2; color: var(--mid); }
+  .price-list strong { color: var(--black); font-weight: 600; }
+  .price-btn { background: var(--black); color: var(--white); padding: 14px 40px; border: none; border-radius: 2px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; width: 100%; font-weight: 500; }
+  .price-btn:hover { background: var(--accent); }
+  .features-section { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin: 80px 0; }
+  .features-list { list-style: none; }
+  .features-list li { font-size: 14px; line-height: 2.2; color: var(--mid); padding-left: 30px; position: relative; }
+  .features-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 600; }
+  .features-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+  .back-section { text-align: center; padding: 60px; }
+  .back-btn { display: inline-block; color: var(--accent); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 12px 32px; border: 1px solid var(--accent); border-radius: 2px; transition: all 0.3s; }
+  .back-btn:hover { background: var(--accent); color: var(--white); }
+  .about-section { background: var(--accent-light); padding: 60px; border-radius: 4px; margin: 60px 0; text-align: center; }
+  .about-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; margin-bottom: 20px; color: var(--black); }
+  .about-text { font-size: 14px; line-height: 2; color: var(--mid); max-width: 800px; margin: 0 auto; }
+  .faq-section { margin: 80px 0; }
+  .faq-title { font-family: 'Cormorant Garamond', serif; font-size: 42px; text-align: center; margin-bottom: 60px; color: var(--black); }
+  .faq-title em { font-style: italic; color: var(--accent); }
+  .faq-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .faq-item { background: var(--white); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: all 0.3s; }
+  .faq-item.active { border-color: var(--accent); box-shadow: 0 8px 24px rgba(200,169,110,0.1); }
+  .faq-question { padding: 24px 32px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 500; color: var(--black); background: rgba(245,239,228,0.5); transition: background 0.3s; }
+  .faq-item.active .faq-question { background: var(--accent-light); }
+  .faq-question:hover { background: var(--accent-light); }
+  .faq-toggle { font-size: 20px; color: var(--accent); transition: transform 0.3s; }
+  .faq-item.active .faq-toggle { transform: rotate(45deg); }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .faq-item.active .faq-answer { max-height: 500px; }
+  .faq-answer-text { padding: 0 32px 24px 32px; font-size: 14px; line-height: 1.9; color: var(--mid); }
+  .booking-section { background: var(--accent-light); padding: 80px 60px; margin: 80px 0; border-radius: 4px; }
+  .booking-title { font-family: 'Cormorant Garamond', serif; font-size: 48px; text-align: center; margin-bottom: 60px; color: var(--black); }
+  .booking-title em { font-style: italic; color: var(--accent); }
+  .booking-form { max-width: 600px; margin: 0 auto; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .form-input, .form-select, .form-textarea { border: none; border-bottom: 2px solid var(--border); padding: 14px 0; font-family: 'Jost', sans-serif; font-size: 14px; background: transparent; outline: none; transition: border-color 0.3s; color: var(--black); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-bottom-color: var(--accent); }
+  .form-input::placeholder { color: var(--border); }
+  .form-textarea { resize: vertical; min-height: 100px; margin-bottom: 24px; }
+  .form-submit { background: var(--black); color: var(--white); border: none; padding: 16px 48px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.3s; width: 100%; font-weight: 600; }
+  .form-submit:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.3); }
+  .form-success { display: none; text-align: center; padding: 40px; background: #e8f5e9; border-radius: 4px; color: #2e7d32; }
+  .form-success.show { display: block; }
+  @media (max-width: 768px) { .booking-section { padding: 60px 24px; } .form-row { grid-template-columns: 1fr; } .booking-title { font-size: 32px; } }
+  @media (max-width: 768px) { .faq-question { font-size: 14px; padding: 16px 20px; } .faq-answer-text { padding: 0 20px 16px 20px; } }
+  footer p { font-size: 12px; letter-spacing: 1px; }
+  @media (max-width: 768px) {
+    .hero { padding: 0 24px 60px; margin-top: 60px; }
+    .hero-img { width: 100%; position: relative; transform: none; right: auto; top: auto; aspect-ratio: 16/9; }
+    .activity-section { padding: 60px 24px; }
+    .activity-details { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .activity-title { font-size: 36px; }
+    .features-section { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<nav id="navbar">
+  <a href="nadaman-tour.html" class="nav-logo">Anda<span>man</span> Tours</a>
+  <ul class="nav-links">
+    <li><a href="nadaman-tour.html">Home</a></li>
+    <li><a href="nadaman-tour.html#activities">Activities</a></li>
+    <li><a href="nadaman-tour.html#contact" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <img src="images/parasailing1.jpg" alt="Parasailing" class="hero-img">
+  <div class="hero-content">
+    <div class="hero-tag">Thrilling Adventure</div>
+    <h1 class="hero-title">Parasailing <em>Experience</em></h1>
+    <p class="hero-desc">Soar high above crystal-clear waters while enjoying stunning aerial views of Andaman's pristine beaches. Feel the rush of adrenaline as you glide through the sky!</p>
+  </div>
+</section>
+<section class="activity-section">
+  <div class="activity-header">
+    <div class="activity-subtitle">Water Sports Activity</div>
+    <h2 class="activity-title">Parasailing <em>Adventure</em></h2>
+    <p class="activity-desc">Experience the thrill of parasailing over the turquoise waters of Andaman. Suspended high in the air with panoramic views, this is an unforgettable adventure for thrill-seekers and nature lovers alike.</p>
+  </div>
+  <div class="activity-details">
+    <div class="detail-box fade-in"><div class="detail-icon">⏱️</div><div class="detail-label">Duration</div><div class="detail-value">15-20 mins</div></div>
+    <div class="detail-box fade-in"><div class="detail-icon">👥</div><div class="detail-label">Participants</div><div class="detail-value">All Ages</div></div>
+    <div class="detail-box fade-in"><div class="detail-icon">📍</div><div class="detail-label">Location</div><div class="detail-value">Beach Resort</div></div>
+    <div class="detail-box fade-in"><div class="detail-icon">⭐</div><div class="detail-label">Difficulty</div><div class="detail-value">Moderate</div></div>
+  </div>
+  <div class="pricing-section">
+    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 36px; margin-bottom: 10px; color: var(--black);">Pricing <em style="font-style: italic; color: var(--accent);">Options</em></h3>
+    <div class="pricing-grid">
+      <div class="price-card fade-in">
+        <div class="price-type">Single Person</div>
+        <div class="price-amount">₹1,200</div>
+        <div class="price-person">per person</div>
+        <div class="price-list"><strong>Includes:</strong><br>• Parasailing Session<br>• Professional Guide<br>• Safety Equipment<br>• Boat Ride</div>
+        <button class="price-btn" onclick="bookActivity('Parasailing Single', '1200')">Book Now</button>
+      </div>
+      <div class="price-card fade-in">
+        <div class="price-type">Couple Package</div>
+        <div class="price-amount">₹2,000</div>
+        <div class="price-person">per couple</div>
+        <div class="price-list"><strong>Includes:</strong><br>• Both Parasail<br>• Photo Session<br>• Priority Timing<br>• Boat for Two</div>
+        <button class="price-btn" onclick="bookActivity('Parasailing Couple', '2000')">Book Now</button>
+      </div>
+      <div class="price-card fade-in">
+        <div class="price-type">Group (5+ people)</div>
+        <div class="price-amount">₹1,100</div>
+        <div class="price-person">per person</div>
+        <div class="price-list"><strong>Includes:</strong><br>• Group Parasailing<br>• Team Photos<br>• Group Discount<br>• Dedicated Guide</div>
+        <button class="price-btn" onclick="bookActivity('Parasailing Group', '1100')">Book Now</button>
+      </div>
+    </div>
+  </div>
+  <div class="features-section fade-in">
+    <div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 32px; margin-bottom: 30px; color: var(--black);">What's <em style="font-style: italic; color: var(--accent);">Included</em></h3>
+      <ul class="features-list">
+        <li>Professional, certified parasailing instructors</li>
+        <li>Top-grade safety equipment and life jackets</li>
+        <li>High-quality banana boat and speedboat</li>
+        <li>Photography during your flight</li>
+        <li>Insurance coverage included</li>
+        <li>Beach setup and preparation</li>
+        <li>Refreshments before and after</li>
+        <li>Memorable certificate of participation</li>
+      </ul>
+    </div>
+    <img src="images/parasailing1.jpg" alt="Parasailing Action" class="features-img">
+  </div>
+  <div class="about-section fade-in">
+    <h3 class="about-title">Why Choose <em>Parasailing?</em></h3>
+    <p class="about-text">Parasailing is one of the most thrilling yet safe water sports offered in Andaman. As you glide 200 feet above the crystal-clear waters, you'll witness the breathtaking beauty of the Arabian Sea and pristine beaches from a perspective few get to experience. Our professional instructors ensure your safety while delivering an adrenaline-pumping adventure. Whether you're a first-timer or an experienced thrill-seeker, parasailing in Andaman creates memories that last a lifetime. Perfect for solo travelers, couples, or families, this activity combines the perfect blend of adventure and scenic beauty.</p>
+  </div>
+  <div class="faq-section">
+    <h2 class="faq-title">Frequently Asked <em>Questions</em></h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-question"><span>Is parasailing safe?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Absolutely! Parasailing is one of the safest water sports. We use internationally certified equipment, professional instructors, and follow all safety protocols. All participants wear life jackets and are securely harnessed. Our operations are approved by local maritime authorities.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question"><span>What's the age/weight limit?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Minimum age is 5 years (with adult) and maximum age is 70+. Weight limits are 40 kg to 120 kg. Children must be accompanied by an adult. If you have any medical conditions, please inform us in advance.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question"><span>Can non-swimmers participate?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Yes! You don't need to be an excellent swimmer. Everyone wears a life jacket, and you're always attached to the boat with secure harnesses. Our guides are trained to assist participants of all swimming abilities.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question"><span>What if I'm afraid of heights?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Many first-timers have height concerns, but parasailing feels different! You're gently lifted off the water in a smooth, peaceful way. Our altitude is approximately 200 feet, and the experience is less intense than it looks. Our guides can adjust your comfort level.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question"><span>What should I bring/wear?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Wear comfortable swimwear, t-shirt, and bring a towel. Apply sunscreen before the activity. Don't bring valuables to the beach as they may get wet. We provide all necessary equipment including life jackets and harnesses. Avoid heavy meals 1-2 hours before parasailing.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question"><span>Are photos/videos included?</span><span class="faq-toggle">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-text">Yes! Professional photography during flight is included in our premium packages. You'll receive digital copies of your photos. Action camera footage is also available as an add-on. Underwater photos with your family before takeoff are complimentary.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="booking-section fade-in">
+    <h2 class="booking-title">Book Your <em>Adventure</em></h2>
+    <form class="booking-form" id="bookingForm" onsubmit="handleBookingSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" name="fullname" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" name="email" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-input" name="phone" placeholder="+91 00000 00000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Date</label>
+          <input type="date" class="form-input" name="date" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Number of Participants</label>
+          <input type="number" class="form-input" name="participants" min="1" max="10" placeholder="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Select Package</label>
+          <select class="form-select" name="package" required>
+            <option value="">Choose package</option>
+            <option value="Single">Single - ₹1,200</option>
+            <option value="Couple">Couple - ₹2,000</option>
+            <option value="Group">Group (5+) - ₹1,100</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Special Requests / Questions</label>
+          <textarea class="form-textarea" name="message" placeholder="Any special requirements or questions?"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="form-submit">Send Booking Request</button>
+      <div class="form-success" id="successMessage">
+        <h3>✓ Booking Request Sent!</h3>
+        <p>We'll contact you shortly with confirmation details.</p>
+      </div>
+    </form>
+  </div>
+  <div class="back-section">
+    <a href="nadaman-tour.html#activities" class="back-btn">← Back to Activities</a>
+  </div>
+  <p>&copy; 2025 Andaman Tours. All Rights Reserved. | Soar High, Create Memories</p>
+</footer>
+<div class="page-loader" id="loader"><div class="loader-logo">Anda<span>man</span></div><div class="loader-bar"></div></div>
+<script>
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursorRing.style.left = (e.clientX - 18) + 'px';
+    cursorRing.style.top = (e.clientY - 18) + 'px';
+  });
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) { navbar.classList.add('scrolled'); }
+    else { navbar.classList.remove('scrolled'); }
+  });
+  const observerOptions = { threshold: 0.1 };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+    });
+  }, observerOptions);
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+  });
+  document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', function() {
+      const faqItem = this.parentElement;
+      faqItem.classList.toggle('active');
+      document.querySelectorAll('.faq-item').forEach(item => {
+        if (item !== faqItem) item.classList.remove('active');
+      });
+    });
+  });
+  function handleBookingSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {
+      fullname: formData.get('fullname'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      date: formData.get('date'),
+      participants: formData.get('participants'),
+      package: formData.get('package'),
+      message: formData.get('message'),
+      activity: 'Parasailing'
+    };
+    localStorage.setItem('bookingData', JSON.stringify(data));
+    document.getElementById('bookingForm').style.display = 'none';
+    document.getElementById('successMessage').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('successMessage').classList.remove('show');
+      document.getElementById('bookingForm').style.display = 'block';
+      e.target.reset();
+    }, 3000);
+  }
+  function bookActivity(name, price) {
+    localStorage.setItem('selectedActivity', JSON.stringify({ name, price, date: new Date().toISOString() }));
+    alert(`Booked: ${name} - ₹${price}`);
+    window.location.href = 'nadaman-tour.html#contact';
+  }
+</script>
+</body>
+</html>

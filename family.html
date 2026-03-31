@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Packages - Andaman Tours</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #1a1a1a;
+    --mid: #555;
+    --light: #999;
+    --border: #e8e4df;
+    --accent: #c8a96e;
+    --accent-light: #f5efe4;
+    --white: #ffffff;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: all 0.4s ease; opacity: 0.6; }
+
+  .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.4s, padding 0.4s; }
+  nav.scrolled { border-color: var(--border); padding: 16px 60px; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 1px; color: var(--black); text-decoration: none; cursor: pointer; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 40px; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); }
+  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--black) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 2px; }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--accent) !important; }
+
+  .hero { min-height: 70vh; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; background: var(--white); padding: 0 60px 80px; margin-top: 80px; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(200,169,110,0.08) 0%, transparent 70%); }
+  .hero-line { position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: var(--accent-light); clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%); z-index: 0; }
+  .hero-img { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 35%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; z-index: 1; box-shadow: 0 40px 80px rgba(0,0,0,0.12); animation: heroFloat 6s ease-in-out infinite; }
+  @keyframes heroFloat { 0%,100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-12px); } }
+  .hero-content { position: relative; z-index: 2; max-width: 500px; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 28px; }
+  .hero-tag::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 5vw, 72px); font-weight: 300; line-height: 1.1; color: var(--black); margin-bottom: 24px; }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-desc { font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--mid); margin-bottom: 32px; }
+
+  .packages-section { padding: 100px 60px; background: var(--white); }
+  .packages-header { text-align: center; margin-bottom: 80px; }
+  .packages-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 16px; display: inline-block; }
+  .packages-title { font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300; color: var(--black); margin-bottom: 20px; }
+  .packages-title em { font-style: italic; color: var(--accent); }
+  .packages-desc { font-size: 14px; color: var(--mid); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+
+  .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; margin-bottom: 60px; }
+  .package-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 40px; transition: all 0.4s ease; position: relative; overflow: hidden; }
+  .package-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); }
+  .package-card:hover { border-color: var(--accent); transform: translateY(-12px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+  
+  .package-badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; font-weight: 600; }
+  .package-duration { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--black); margin-bottom: 4px; }
+  .package-tagline { font-size: 13px; color: var(--accent); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+  .package-features { font-size: 13px; line-height: 2; color: var(--mid); margin-bottom: 32px; }
+  .package-features strong { color: var(--black); font-weight: 600; }
+  .package-price { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--accent); margin-bottom: 20px; }
+  .package-cta { background: var(--black); color: var(--white); padding: 12px 32px; border: none; border-radius: 2px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; width: 100%; font-weight: 500; }
+  .package-cta:hover { background: var(--accent); transform: translateY(-2px); }
+
+  .back-section { text-align: center; padding: 60px; }
+  .back-btn { display: inline-block; color: var(--accent); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 12px 32px; border: 1px solid var(--accent); border-radius: 2px; transition: all 0.3s; }
+  .back-btn:hover { background: var(--accent); color: var(--white); }
+
+  .booking-section { padding: 100px 60px; background: var(--accent-light); }
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 60px; }
+  .section-tag { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 12px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4vw, 54px); font-weight: 300; color: var(--black); }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .booking-note { font-size: 13px; line-height: 1.8; color: var(--mid); margin-bottom: 24px; max-width: 420px; }
+  .contact-inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
+  .contact-info { display: flex; flex-direction: column; gap: 24px; }
+  .info-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .info-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--black); line-height: 1.4; }
+  .contact-form { display: flex; flex-direction: column; gap: 20px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--light); font-weight: 500; }
+  .form-input, .form-select, .form-textarea { border: none; border-bottom: 1px solid var(--border); padding: 12px 0; font-family: 'Jost', sans-serif; font-size: 15px; color: var(--black); background: transparent; outline: none; transition: border-color 0.3s; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: none; height: 110px; }
+  .form-submit { background: var(--black); color: var(--white); border: none; padding: 16px 40px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; border-radius: 2px; align-self: flex-start; transition: all 0.3s; }
+  .form-submit:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.3); }
+
+  footer { background: var(--dark); color: var(--light); padding: 80px 60px 40px; text-align: center; }
+  footer p { font-size: 12px; letter-spacing: 1px; }
+
+  @media (max-width: 768px) {
+    .hero { padding: 0 24px 60px; margin-top: 60px; }
+    .hero-img { width: 100%; position: relative; transform: none; right: auto; top: auto; aspect-ratio: 16/9; }
+    .packages-section { padding: 60px 24px; }
+    .booking-section { padding: 60px 24px; }
+    .packages-grid { grid-template-columns: 1fr; gap: 24px; }
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .packages-title { font-size: 36px; }
+    .package-card { padding: 24px; }
+    .package-duration { font-size: 20px; }
+    .package-price { font-size: 24px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="nadaman-tour.html" class="nav-logo">Anda<span>man</span> Tours</a>
+  <ul class="nav-links">
+    <li><a href="nadaman-tour.html">Home</a></li>
+    <li><a href="nadaman-tour.html#testimonials">Reviews</a></li>
+    <li><a href="#booking" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <img src="images/family2.jpeg" alt="Family Vacation" class="hero-img">
+  <div class="hero-content">
+    <div class="hero-tag">Family Bonding</div>
+    <h1 class="hero-title">Family <em>Adventures</em></h1>
+    <p class="hero-desc">Create unforgettable memories with your loved ones. Our family packages offer kid-friendly activities, adventure opportunities, and perfect beach relaxation for all ages.</p>
+  </div>
+</section>
+
+<section class="packages-section">
+  <div class="packages-header">
+    <div class="packages-subtitle">Family Vacation Packages</div>
+    <h2 class="packages-title">Family <em>Packages</em></h2>
+    <p class="packages-desc">Discover the perfect family getaway with packages designed for memorable experiences, safe activities, and quality time together in paradise.</p>
+  </div>
+
+  <div class="packages-grid">
+    <div class="package-card fade-in">
+      <div class="package-badge">Budget Friendly</div>
+      <div class="package-duration">3 Nights / 4 Days</div>
+      <div class="package-tagline">Quick Weekend</div>
+      <div class="package-features">
+        <strong>Includes:</strong><br>
+        • 3 Star Resort<br>
+        • Breakfast & Dinner<br>
+        • Kids' Activities<br>
+        • Beach Time<br>
+        • Safe Ferry Rides
+      </div>
+      <div class="package-price">₹18,999</div>
+      <button class="package-cta" onclick="selectFamilyPackage('3N/4D', '18,999')">Select Package</button>
+    </div>
+
+    <div class="package-card fade-in">
+      <div class="package-badge">Popular</div>
+      <div class="package-duration">4 Nights / 5 Days</div>
+      <div class="package-tagline">Perfect Balance</div>
+      <div class="package-features">
+        <strong>Includes:</strong><br>
+        • 3 Star Hotel<br>
+        • All Meals<br>
+        • Water Sports<br>
+        • Guided Tours<br>
+        • Kids' Entertainment
+      </div>
+      <div class="package-price">₹28,999</div>
+      <button class="package-cta" onclick="selectFamilyPackage('4N/5D', '28,999')">Select Package</button>
+    </div>
+
+    <div class="package-card fade-in">
+      <div class="package-badge">Best Value</div>
+      <div class="package-duration">5 Nights / 6 Days</div>
+      <div class="package-tagline">Full Experience</div>
+      <div class="package-features">
+        <strong>Includes:</strong><br>
+        • 4 Star Resort<br>
+        • Premium Dining<br>
+        • All Water Activities<br>
+        • Island Hopping<br>
+        • Snorkeling Trip
+      </div>
+      <div class="package-price">₹42,999</div>
+      <button class="package-cta" onclick="selectFamilyPackage('5N/6D', '42,999')">Select Package</button>
+    </div>
+
+    <div class="package-card fade-in">
+      <div class="package-badge">Comfort Plus</div>
+      <div class="package-duration">6 Nights / 7 Days</div>
+      <div class="package-tagline">Luxury Comfort</div>
+      <div class="package-features">
+        <strong>Includes:</strong><br>
+        • 4 Star Resort<br>
+        • Gourmet Meals<br>
+        • All Activities<br>
+        • Spa for Adults<br>
+        • Yacht Cruise
+      </div>
+      <div class="package-price">₹59,999</div>
+      <button class="package-cta" onclick="selectFamilyPackage('6N/7D', '59,999')">Select Package</button>
+    </div>
+
+    <div class="package-card fade-in">
+      <div class="package-badge">Premium Package</div>
+      <div class="package-duration">7 Nights / 8 Days</div>
+      <div class="package-tagline">Ultimate Family Bond</div>
+      <div class="package-features">
+        <strong>Includes:</strong><br>
+        • 5 Star Resort<br>
+        • Private Chef<br>
+        • Exclusive Activities<br>
+        • VIP Tours<br>
+        • Premium Support
+      </div>
+      <div class="package-price">₹79,999</div>
+      <button class="package-cta" onclick="selectFamilyPackage('7N/8D', '79,999')">Select Package</button>
+    </div>
+  </div>
+
+  <div class="back-section">
+    <a href="nadaman-tour.html" class="back-btn">← Back to Home</a>
+  </div>
+</section>
+
+<section class="booking-section" id="booking">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Booking</div>
+      <h2 class="section-title">Plan Your <em>Trip</em></h2>
+    </div>
+  </div>
+  <div class="contact-inner">
+    <div>
+      <p class="booking-note">Family-friendly planning made easy. Tell us your dates and preferences for a smooth trip.</p>
+      <div class="contact-info">
+        <div>
+          <div class="info-label">Call</div>
+          <div class="info-value">+91 9679532700</div>
+        </div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value">andamantours@example.com</div>
+        </div>
+        <div>
+          <div class="info-label">Location</div>
+          <div class="info-value">Port Blair, Andaman</div>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleBookingSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="tel" placeholder="Mobile Number" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" placeholder="Email Address" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Travel Date</label>
+          <input class="form-input" type="date" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Adults</label>
+          <select class="form-select" required>
+            <option value="" disabled selected>Select</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kids</label>
+          <select class="form-select" required>
+            <option value="" disabled selected>Select</option>
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" placeholder="Tell us your preferences"></textarea>
+      </div>
+      <button class="form-submit" type="submit">Send Enquiry</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2025 Andaman Tours. All Rights Reserved. | Family Memories Start Here</p>
+</footer>
+
+<div class="page-loader" id="loader">
+  <div class="loader-logo">Anda<span>man</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<script>
+  // Cursor Movement
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursorRing.style.left = (e.clientX - 18) + 'px';
+    cursorRing.style.top = (e.clientY - 18) + 'px';
+  });
+
+  // Navbar Scroll Effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // Fade-in on Scroll
+  const observerOptions = { threshold: 0.1 };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Page Loader
+  window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+  });
+
+  // Select Family Package Handler
+  function selectFamilyPackage(duration, price) {
+    // Store selected package in localStorage
+    localStorage.setItem('selectedFamilyPackage', JSON.stringify({
+      duration: duration,
+      price: price,
+      selectedAt: new Date().toISOString()
+    }));
+    
+    // Alert and redirect to contact/booking
+    alert(`Selected: ${duration} - ₹${price}. Redirecting to booking...`);
+    window.location.href = 'nadaman-tour.html#contact';
+  }
+
+  function handleBookingSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Sending...';
+    btn.style.background = '#888';
+    setTimeout(() => {
+      btn.textContent = 'Enquiry Sent!';
+      btn.style.background = '#2a7a4b';
+      setTimeout(() => {
+        btn.textContent = 'Send Enquiry';
+        btn.style.background = '';
+        e.target.reset();
+      }, 3000);
+    }, 1500);
+  }
+</script>
+
+</body>
+</html>
