@@ -121,13 +121,19 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <nav id="navbar">
-  <a href="nadaman-tour.html" class="nav-logo">Anda<span>man</span> Tours</a>
+  <a href="index.html" class="nav-logo">Anda<span>man</span> Tours</a>
   <ul class="nav-links">
-    <li><a href="nadaman-tour.html">Home</a></li>
-    <li><a href="nadaman-tour.html#activities">Activities</a></li>
-    <li><a href="nadaman-tour.html#contact" class="nav-cta">Book Now</a></li>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#activities">Activities</a></li>
+    <li><a href="index.html#contact" class="nav-cta">Book Now</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="index.html#activities" onclick="toggleMenu()">Activities</a>
+  <a href="index.html#contact" class="nav-cta" onclick="toggleMenu()">Book Now</a>
+</div>
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-line"></div>
@@ -246,7 +252,7 @@
     </form>
   </div>
   <div class="back-section">
-    <a href="nadaman-tour.html#activities" class="back-btn">← Back to Activities</a>
+    <a href="index.html#activities" class="back-btn">← Back to Activities</a>
   </div>
   <p>&copy; 2025 Andaman Tours. All Rights Reserved. | Pure Adrenaline, Pure Speed</p>
 </footer>
@@ -311,7 +317,12 @@
   function bookActivity(name, price) {
     localStorage.setItem('selectedActivity', JSON.stringify({ name, price, date: new Date().toISOString() }));
     alert(`Booked: ${name} - ₹${price}`);
-    window.location.href = 'nadaman-tour.html#contact';
+    window.location.href = 'index.html#contact';
+  }
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileNav').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileNav').classList.contains('open') ? 'hidden' : '';
   }
 </script>
 </body>
