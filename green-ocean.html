@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Ocean Ferry — Nadaman Tours</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --mid: #555;
+    --light: #999;
+    --border: #e8e4df;
+    --accent: #c8a96e;
+    --accent-light: #f5efe4;
+    --white: #ffffff;
+    --green: #1a6b4a;
+    --green-light: #e6f4ee;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; opacity: 0.6; }
+
+  .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .fade-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-left.visible { opacity: 1; transform: translateX(0); }
+  .fade-right { opacity: 0; transform: translateX(40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed; inset: 0; background: var(--white); z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-isle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--light);
+    animation: fadeInDown 0.7s ease both;
+  }
+  .loader-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1;
+    animation: fadeInUp 0.7s ease 0.1s both;
+  }
+  .loader-logo span { color: var(--accent); }
+  .loader-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 500;
+    animation: fadeInUp 0.7s ease 0.2s both;
+  }
+  .loader-bar {
+    width: 220px; height: 1px;
+    background: var(--border);
+    position: relative; overflow: hidden;
+    margin-top: 8px;
+    animation: fadeInUp 0.5s ease 0.3s both;
+  }
+  .loader-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    animation: loadBar 2s ease forwards;
+  }
+  @keyframes loadBar { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
+  @keyframes fadeInDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.4s, padding 0.4s; }
+  nav.scrolled { border-color: var(--border); padding: 16px 60px; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 1px; color: var(--black); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--black) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 2px; }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--accent) !important; }
+
+  /* HERO */
+  .pkg-hero { min-height: 92vh; display: flex; align-items: center; position: relative; overflow: hidden; background: var(--white); padding: 120px 60px 80px; }
+  .hero-bg-shape { position: absolute; right: 0; top: 0; bottom: 0; width: 48%; background: var(--green-light); clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%); z-index: 0; }
+  .hero-img-main { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 38%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; z-index: 1; box-shadow: 0 40px 80px rgba(0,0,0,0.14); animation: heroFloat 6s ease-in-out infinite; }
+  .hero-img-badge { position: absolute; right: 5%; bottom: 18%; z-index: 2; background: var(--white); border-radius: 4px; padding: 18px 24px; box-shadow: 0 16px 40px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 14px; animation: heroFloat 6s ease-in-out infinite 1s; }
+  .badge-icon { font-size: 26px; }
+  .badge-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); }
+  .badge-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--black); margin-top: 2px; }
+  @keyframes heroFloat { 0%,100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-10px); } }
+  .hero-content { position: relative; z-index: 2; max-width: 560px; }
+  .breadcrumb { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); margin-bottom: 28px; animation: fadeInDown 0.9s ease 0.2s both; flex-wrap: wrap; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb span { color: var(--border); }
+  .pkg-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); font-weight: 500; margin-bottom: 20px; animation: fadeInDown 0.9s ease 0.3s both; }
+  .pkg-tag::before { content: ''; display: block; width: 28px; height: 1px; background: var(--green); }
+  .pkg-hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(46px, 5.5vw, 78px); font-weight: 300; line-height: 1.05; color: var(--black); margin-bottom: 24px; animation: fadeInUp 0.9s ease 0.4s both; }
+  .pkg-hero-title em { font-style: italic; color: var(--accent); }
+  .pkg-hero-desc { font-size: 15px; font-weight: 300; line-height: 1.9; color: var(--mid); max-width: 420px; margin-bottom: 36px; animation: fadeInUp 0.9s ease 0.5s both; }
+  .pkg-meta-row { display: flex; gap: 28px; margin-bottom: 40px; animation: fadeInUp 0.9s ease 0.6s both; flex-wrap: wrap; }
+  .meta-chip { display: flex; align-items: center; gap: 8px; }
+  .meta-chip-icon { font-size: 16px; }
+  .meta-chip-text { font-size: 12px; letter-spacing: 1px; color: var(--mid); }
+  .meta-chip-text strong { display: block; font-size: 13px; font-weight: 500; color: var(--black); letter-spacing: 0; }
+  .hero-price-row { display: flex; align-items: center; gap: 28px; animation: fadeInUp 0.9s ease 0.7s both; flex-wrap: wrap; }
+  .hero-price { font-family: 'Cormorant Garamond', serif; }
+  .hero-price-from { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); display: block; }
+  .hero-price-num { font-size: 42px; font-weight: 600; color: var(--black); line-height: 1; }
+  .hero-price-per { font-size: 13px; color: var(--light); }
+  .btn-book { background: var(--black); color: var(--white); padding: 16px 40px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; border: none; border-radius: 2px; cursor: none; transition: all 0.3s; text-decoration: none; display: inline-block; }
+  .btn-book:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.35); }
+  .scroll-hint { position: absolute; bottom: 40px; right: 60px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); animation: fadeInUp 1s ease 1s both; }
+  .scroll-line { width: 1px; height: 46px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+
+  /* MARQUEE */
+  .marquee-section { padding: 24px 0; background: var(--black); overflow: hidden; }
+  .marquee-track { display: flex; animation: marquee 26s linear infinite; white-space: nowrap; }
+  .marquee-item { flex-shrink: 0; padding: 0 40px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--light); display: flex; align-items: center; gap: 20px; }
+  .marquee-item::after { content: '✦'; color: var(--accent); font-size: 8px; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* GALLERY */
+  .gallery-section { padding: 100px 60px; background: var(--white); }
+  .section-tag { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 16px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4vw, 54px); font-weight: 300; line-height: 1.1; color: var(--black); margin-bottom: 60px; }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .gallery-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 16px; }
+  .gallery-item { overflow: hidden; border-radius: 4px; cursor: none; }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.5s; filter: saturate(0.85); display: block; }
+  .gallery-item:hover .gallery-img { transform: scale(1.07); filter: saturate(1.1); }
+
+  /* ROUTE SECTION */
+  .route-section { padding: 100px 60px; background: var(--green-light); }
+  .route-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px; align-items: start; margin-top: 60px; }
+  .route-sidebar { position: sticky; top: 100px; }
+  .route-card { background: var(--white); border-radius: 4px; padding: 36px; border: 1px solid var(--border); margin-bottom: 24px; }
+  .route-card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 24px; color: var(--black); }
+  .route-summary-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .route-summary-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; font-weight: 300; color: var(--mid); line-height: 1.6; }
+  .route-summary-list li::before { content: '🌿'; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+  .sidebar-price-card { background: var(--green); color: var(--white); border-radius: 4px; padding: 32px; text-align: center; }
+  .sp-from { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+  .sp-num { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 600; color: var(--white); line-height: 1.1; margin: 8px 0 4px; }
+  .sp-per { font-size: 12px; color: rgba(255,255,255,0.55); margin-bottom: 24px; }
+  .btn-green { display: block; background: var(--accent); color: var(--white); padding: 14px 28px; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: all 0.3s; cursor: none; }
+  .btn-green:hover { background: var(--white); color: var(--black); transform: translateY(-2px); }
+
+  .route-timeline { display: flex; flex-direction: column; gap: 0; }
+  .route-stop { border-left: 2px solid var(--border); padding: 0 0 44px 36px; position: relative; transition: border-color 0.4s; }
+  .route-stop:last-child { padding-bottom: 0; }
+  .route-stop::before { content: ''; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--border); border: 2px solid var(--green-light); transition: background 0.4s; }
+  .route-stop.active::before { background: var(--accent); }
+  .route-stop.active { border-color: var(--accent); }
+  .route-stop.departure::before { background: var(--green); border-color: var(--green-light); width: 16px; height: 16px; left: -9px; }
+  .route-stop.arrival::before { background: var(--accent); border-color: var(--green-light); width: 16px; height: 16px; left: -9px; }
+  .stop-time { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+  .stop-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--black); margin-bottom: 10px; }
+  .stop-desc { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 16px; }
+  .stop-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stop-tag { background: var(--white); border: 1px solid var(--border); padding: 6px 14px; border-radius: 2px; font-size: 11px; letter-spacing: 1px; color: var(--mid); }
+
+  /* DECK CLASSES */
+  .decks-section { padding: 100px 60px; background: var(--white); }
+  .decks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
+  .deck-card { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: all 0.4s; cursor: none; }
+  .deck-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 24px 60px rgba(0,0,0,0.08); }
+  .deck-img-wrap { height: 200px; overflow: hidden; position: relative; }
+  .deck-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s, filter 0.5s; filter: saturate(0.85); }
+  .deck-card:hover .deck-img { transform: scale(1.08); filter: saturate(1); }
+  .deck-badge { position: absolute; top: 16px; left: 16px; padding: 5px 12px; border-radius: 2px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
+  .deck-badge.economy { background: rgba(10,10,10,0.7); color: var(--white); }
+  .deck-badge.deluxe { background: rgba(26,107,74,0.88); color: var(--white); }
+  .deck-badge.premium { background: rgba(200,169,110,0.92); color: var(--white); }
+  .deck-body { padding: 28px 26px; }
+  .deck-class { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+  .deck-name { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--black); margin-bottom: 12px; }
+  .deck-desc { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 20px; }
+  .deck-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .deck-features li { font-size: 12px; color: var(--mid); display: flex; align-items: center; gap: 8px; font-weight: 300; }
+  .deck-features li::before { content: '✓'; color: var(--accent); font-weight: 600; font-size: 13px; }
+  .deck-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 20px; }
+  .deck-price-from { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--light); display: block; }
+  .deck-price-num { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--black); line-height: 1; }
+  .deck-book { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--black); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: gap 0.3s, color 0.3s; }
+  .deck-book:hover { gap: 14px; color: var(--accent); }
+  .deck-book::after { content: '→'; font-size: 16px; }
+
+  /* AMENITIES */
+  .amenities-section { padding: 100px 60px; background: var(--accent-light); }
+  .amenities-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 60px; }
+  .amenity-card { background: var(--white); padding: 44px 32px; transition: all 0.4s; cursor: none; position: relative; overflow: hidden; }
+  .amenity-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
+  .amenity-card:hover::before { transform: scaleX(1); }
+  .amenity-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); }
+  .amenity-icon { font-size: 34px; margin-bottom: 20px; display: block; }
+  .amenity-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--black); margin-bottom: 12px; }
+  .amenity-desc { font-size: 12px; font-weight: 300; line-height: 1.9; color: var(--mid); }
+
+  /* INCLUSIONS */
+  .inclusions-section { padding: 100px 60px; background: var(--black); }
+  .inclusions-section .section-title { color: var(--white); margin-bottom: 60px; }
+  .inc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .inc-col-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #1e1e1e; }
+  .inc-col-title.green { color: #5fbb8a; }
+  .inc-col-title.red { color: #e07070; }
+  .inc-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .inc-list li { display: flex; align-items: flex-start; gap: 14px; font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.7); line-height: 1.7; }
+  .inc-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+  .inc-dot.yes { background: rgba(95,187,138,0.15); color: #5fbb8a; }
+  .inc-dot.no { background: rgba(224,112,112,0.15); color: #e07070; }
+
+  /* SCHEDULE TABLE */
+  .schedule-section { padding: 100px 60px; background: var(--white); }
+  .schedule-table { width: 100%; border-collapse: collapse; margin-top: 60px; }
+  .schedule-table th { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--light); font-weight: 500; padding: 16px 20px; text-align: left; border-bottom: 2px solid var(--border); }
+  .schedule-table td { font-size: 13px; font-weight: 300; color: var(--mid); padding: 18px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; transition: background 0.3s; }
+  .schedule-table tr:hover td { background: var(--green-light); }
+  .schedule-table td:first-child { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 400; color: var(--black); }
+  .route-arrow { color: var(--accent); font-size: 16px; margin: 0 6px; }
+  .status-badge { display: inline-block; padding: 4px 12px; border-radius: 2px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; }
+  .status-badge.available { background: rgba(95,187,138,0.12); color: #3a9e6a; }
+  .status-badge.limited { background: rgba(200,169,110,0.15); color: #a0782a; }
+  .status-badge.full { background: rgba(224,112,112,0.12); color: #c04040; }
+
+  /* TESTIMONIALS */
+  .testi-section { padding: 100px 60px; background: var(--green-light); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .testi-card { background: var(--white); border: 1px solid var(--border); padding: 40px 36px; border-radius: 4px; transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s; cursor: none; }
+  .testi-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+  .testi-stars { color: var(--accent); font-size: 14px; letter-spacing: 3px; margin-bottom: 20px; }
+  .testi-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; font-style: italic; color: var(--black); line-height: 1.75; margin-bottom: 28px; }
+  .testi-author { display: flex; align-items: center; gap: 14px; }
+  .testi-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--white); font-weight: 600; flex-shrink: 0; }
+  .testi-name { font-size: 14px; font-weight: 500; color: var(--black); }
+  .testi-loc { font-size: 11px; color: var(--light); margin-top: 2px; }
+
+  /* PACKAGES STRIP */
+  .packages-strip { padding: 60px 60px; background: var(--white); border-top: 1px solid var(--border); }
+  .strip-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
+  .strip-links { display: flex; gap: 16px; flex-wrap: wrap; }
+  .strip-btn { padding: 14px 28px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: all 0.3s; white-space: nowrap; border: 1px solid var(--border); color: var(--mid); }
+  .strip-btn:hover { border-color: var(--accent); color: var(--black); transform: translateY(-2px); }
+
+  /* CTA */
+  .cta-section { padding: 100px 60px; background: var(--white); }
+  .cta-inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: 100px; align-items: start; }
+  .info-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+  .info-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--black); line-height: 1.4; }
+  .contact-info { margin-top: 40px; display: flex; flex-direction: column; gap: 28px; }
+  .contact-form { display: flex; flex-direction: column; gap: 22px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--light); font-weight: 500; }
+  .form-input, .form-select, .form-textarea { border: none; border-bottom: 1px solid var(--border); padding: 14px 0; font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 300; color: var(--black); background: transparent; outline: none; transition: border-color 0.3s; width: 100%; cursor: none; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--border); }
+  .form-textarea { resize: none; height: 90px; }
+  .form-submit { background: var(--black); color: var(--white); border: none; padding: 18px 48px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: none; border-radius: 2px; align-self: flex-start; transition: all 0.3s; }
+  .form-submit:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.3); }
+
+  /* FOOTER */
+  footer { background: var(--black); color: var(--white); padding: 80px 60px 40px; }
+  .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; padding-bottom: 60px; border-bottom: 1px solid #1e1e1e; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--white); margin-bottom: 20px; display: block; text-decoration: none; }
+  .footer-logo span { color: var(--accent); }
+  .footer-about { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--light); max-width: 260px; }
+  .footer-col-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--white); font-weight: 500; margin-bottom: 28px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .footer-links a { font-size: 13px; font-weight: 300; color: var(--light); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #444; }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .pkg-hero { padding: 120px 24px 80px; min-height: auto; }
+    .hero-bg-shape, .hero-img-main, .hero-img-badge, .scroll-hint { display: none; }
+    .gallery-section, .route-section, .decks-section, .amenities-section, .inclusions-section, .schedule-section, .testi-section, .cta-section, .packages-strip { padding: 70px 24px; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:first-child { grid-row: auto; grid-column: 1 / 3; height: 240px; }
+    .route-grid { grid-template-columns: 1fr; gap: 40px; }
+    .route-sidebar { position: static; }
+    .decks-grid { grid-template-columns: 1fr; }
+    .amenities-grid { grid-template-columns: 1fr 1fr; }
+    .inc-grid { grid-template-columns: 1fr; gap: 40px; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .cta-inner { grid-template-columns: 1fr; gap: 50px; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 36px; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+    footer { padding: 60px 24px 32px; }
+    .schedule-table { display: block; overflow-x: auto; }
+    .strip-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER — Andaman themed -->
+<div class="page-loader" id="loader">
+  <div class="loader-isle">Andaman & Nicobar Islands</div>
+  <div class="loader-logo">Green <span>Ocean</span></div>
+  <div class="loader-sub">⚓ Premium Ferry Service</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="nadaman-tour.html" class="nav-logo">Nada<span>man</span> Tours</a>
+  <ul class="nav-links">
+    <li><a href="nadaman-tour.html#destinations">Destinations</a></li>
+    <li><a href="nadaman-tour.html#packages">Packages</a></li>
+    <li><a href="andaman-package.html">3N4D</a></li>
+    <li><a href="andaman-4n5d-package.html">4N5D</a></li>
+    <li><a href="andaman-5n6d-package.html">5N6D</a></li>
+    <li><a href="mv-nautika-ferry.html">MV Nautika</a></li>
+    <li><a href="#cta" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="pkg-hero">
+  <div class="hero-bg-shape"></div>
+  <img class="hero-img-main" src="https://images.unsplash.com/photo-1571406252241-db0280bd36cd?w=700&q=85" alt="Green Ocean Ferry">
+  <div class="hero-img-badge">
+    <div class="badge-icon">🌿</div>
+    <div>
+      <div class="badge-label">Ferry Service</div>
+      <div class="badge-val">Port Blair ↔ Havelock ↔ Neil</div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="breadcrumb">
+      <a href="nadaman-tour.html">Home</a><span>/</span>
+      <a href="nadaman-tour.html#packages">Packages</a><span>/</span>
+      Green Ocean Ferry
+    </div>
+    <div class="pkg-tag">Eco-Certified Ferry</div>
+    <h1 class="pkg-hero-title">Green<br><em>Ocean</em><br>Ferry</h1>
+    <p class="pkg-hero-desc">Andaman's greenest and most scenic inter-island ferry — eco-certified, smooth, and punctual. Sail from Port Blair to Havelock and Neil Island with panoramic deck views and a commitment to the ocean it crosses.</p>
+    <div class="pkg-meta-row">
+      <div class="meta-chip"><span class="meta-chip-icon">⏱️</span><div class="meta-chip-text"><strong>~2 Hrs</strong>Port Blair → Havelock</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">👥</span><div class="meta-chip-text"><strong>200 Pax</strong>Capacity</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">🛥️</span><div class="meta-chip-text"><strong>3 Classes</strong>Deck Options</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">🌿</span><div class="meta-chip-text"><strong>Eco Certified</strong>Low Emission</div></div>
+    </div>
+    <div class="hero-price-row">
+      <div class="hero-price">
+        <span class="hero-price-from">Economy class from</span>
+        <span class="hero-price-num">₹1,100</span>
+        <span class="hero-price-per"> / person</span>
+      </div>
+      <a href="#cta" class="btn-book">Book Your Seat</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">Port Blair</div><div class="marquee-item">Havelock Island</div><div class="marquee-item">Neil Island</div><div class="marquee-item">Eco Certified</div><div class="marquee-item">Low Emission</div><div class="marquee-item">Economy Class</div><div class="marquee-item">Deluxe Class</div><div class="marquee-item">Panoramic Deck</div><div class="marquee-item">Daily Sailings</div><div class="marquee-item">On-Time Departure</div><div class="marquee-item">Green Initiative</div><div class="marquee-item">Coral-Safe Fuel</div>
+    <div class="marquee-item">Port Blair</div><div class="marquee-item">Havelock Island</div><div class="marquee-item">Neil Island</div><div class="marquee-item">Eco Certified</div><div class="marquee-item">Low Emission</div><div class="marquee-item">Economy Class</div><div class="marquee-item">Deluxe Class</div><div class="marquee-item">Panoramic Deck</div><div class="marquee-item">Daily Sailings</div><div class="marquee-item">On-Time Departure</div><div class="marquee-item">Green Initiative</div><div class="marquee-item">Coral-Safe Fuel</div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="fade-in">
+    <div class="section-tag">On Board Green Ocean</div>
+    <div class="section-title">Sail Green,<br>Sail <em>Beautiful</em></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item fade-left" style="transition-delay:0.1s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1501426026826-31c667bdf23d?w=700&q=80" alt="Green Ocean Ferry">
+    </div>
+    <div class="gallery-item fade-in" style="transition-delay:0.2s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&q=80" alt="Ocean Crossing">
+    </div>
+    <div class="gallery-item fade-right" style="transition-delay:0.3s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1468078809804-4c7b3e60a478?w=700&q=80" alt="Tropical Sea">
+    </div>
+    <div class="gallery-item fade-in" style="transition-delay:0.35s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=700&q=80" alt="Havelock Island">
+    </div>
+    <div class="gallery-item fade-right" style="transition-delay:0.4s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&q=80" alt="Andaman Waters">
+    </div>
+  </div>
+</section>
+
+<!-- ROUTE SECTION -->
+<section class="route-section" id="route">
+  <div class="fade-in">
+    <div class="section-tag">Ferry Route</div>
+    <div class="section-title">From Port Blair<br>to <em>Island Paradise</em></div>
+  </div>
+  <div class="route-grid">
+    <div class="route-sidebar fade-left" style="transition-delay:0.1s">
+      <div class="route-card">
+        <div class="route-card-title">Journey Highlights</div>
+        <ul class="route-summary-list">
+          <li>Departs Haddo Jetty, Port Blair at 7:00 AM daily</li>
+          <li>Havelock Island reached in approx. 2 hours</li>
+          <li>Neil Island onward in additional 50 minutes</li>
+          <li>Return sailing from Neil at 1:30 PM</li>
+          <li>Eco-certified vessel — low emission, coral-safe fuel</li>
+          <li>Panoramic open green deck at the bow</li>
+          <li>Organic snack bar with local produce</li>
+          <li>No single-use plastics on board</li>
+        </ul>
+      </div>
+      <div class="sidebar-price-card">
+        <div class="sp-from">Economy class from</div>
+        <div class="sp-num">₹1,100</div>
+        <div class="sp-per">per person one way</div>
+        <a href="#cta" class="btn-green">Book a Seat</a>
+      </div>
+    </div>
+
+    <div class="route-timeline fade-right" style="transition-delay:0.2s">
+      <div class="route-stop departure active">
+        <div class="stop-time">07:00 AM · Departure</div>
+        <div class="stop-name">Haddo Jetty<br>Port Blair</div>
+        <p class="stop-desc">Green Ocean departs from Haddo Jetty — Port Blair's secondary terminal, typically less crowded than Phoenix Bay. Board 30 minutes early, collect your eco-wristband, and take your seat as the ferry glides out of the harbour into open Andaman waters. The crew briefs passengers on the vessel's green practices — no plastic, no dumping, silent engine zones near coral reefs.</p>
+        <div class="stop-tags">
+          <div class="stop-tag">📍 Haddo Jetty</div>
+          <div class="stop-tag">🕖 Board by 6:30 AM</div>
+          <div class="stop-tag">🌿 Eco Briefing</div>
+          <div class="stop-tag">♻️ Zero Plastic Policy</div>
+        </div>
+      </div>
+
+      <div class="route-stop">
+        <div class="stop-time">~45 min · At Sea</div>
+        <div class="stop-name">Coral Passage<br>Andaman Sea</div>
+        <p class="stop-desc">Green Ocean slows through the protected coral corridor — a unique practice that sets it apart from conventional ferries. Engines are throttled down to reduce turbulence above the reef systems below. This is the best time to head to the bow deck: spot sea turtles surfacing, watch white terns dive, and photograph the emerald water turning deep sapphire blue as the islands fall behind.</p>
+        <div class="stop-tags">
+          <div class="stop-tag">🐢 Turtle Spotting</div>
+          <div class="stop-tag">🪸 Reef Safe Zone</div>
+          <div class="stop-tag">🌊 Open Deck Views</div>
+          <div class="stop-tag">📸 Best Photo Time</div>
+        </div>
+      </div>
+
+      <div class="route-stop">
+        <div class="stop-time">~09:00 AM · 1st Stop</div>
+        <div class="stop-name">Havelock Island<br>Swaraj Dweep</div>
+        <p class="stop-desc">Green Ocean docks at Havelock Jetty — Asia's best beach destination. Passengers disembark here for Radhanagar Beach, Elephant Beach snorkeling, and resort stays. The vessel pauses for 20 minutes for resupply — all goods loaded follow the ferry's zero-waste sourcing policy. Passengers continuing to Neil Island enjoy a final stretch of open water with stunning views of Havelock's forested coastline.</p>
+        <div class="stop-tags">
+          <div class="stop-tag">🏖️ Radhanagar Beach</div>
+          <div class="stop-tag">🤿 Elephant Beach</div>
+          <div class="stop-tag">⏱️ ~2 hrs from Port Blair</div>
+          <div class="stop-tag">🌴 Eco Resort Transfers</div>
+        </div>
+      </div>
+
+      <div class="route-stop arrival">
+        <div class="stop-time">~10:00 AM · Final Stop</div>
+        <div class="stop-name">Neil Island<br>Shaheed Dweep</div>
+        <p class="stop-desc">Final landfall at Neil Island — the quietest and most ecologically pristine island in the Andaman chain. Green Ocean's arrival is greeted by the island's famous natural coral bridge visible from the jetty. Explore Bharatpur, Laxmanpur, and Sitapur beaches at your own pace. Return ferry departs at <strong>1:30 PM</strong> daily — arrive 15 minutes early at Neil Jetty.</p>
+        <div class="stop-tags">
+          <div class="stop-tag">🪸 Coral Bridge</div>
+          <div class="stop-tag">✨ Bioluminescent Beach</div>
+          <div class="stop-tag">⏱️ ~3 hrs from Port Blair</div>
+          <div class="stop-tag">🔄 Return at 1:30 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECK CLASSES -->
+<section class="decks-section" id="classes">
+  <div class="fade-in">
+    <div class="section-tag">Choose Your Class</div>
+    <div class="section-title">Three Green Ways<br>to <em>Cross the Sea</em></div>
+  </div>
+  <div class="decks-grid">
+    <div class="deck-card fade-left" style="transition-delay:0.1s">
+      <div class="deck-img-wrap">
+        <img class="deck-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Economy Class">
+        <div class="deck-badge economy">Economy</div>
+      </div>
+      <div class="deck-body">
+        <div class="deck-class">Lower Deck</div>
+        <div class="deck-name">Economy Class</div>
+        <p class="deck-desc">Clean, comfortable, and eco-conscious seating on the lower deck. Everything you need for a smooth crossing — nothing wasted.</p>
+        <ul class="deck-features">
+          <li>Air-conditioned interior seating</li>
+          <li>Reclining seats with armrests</li>
+          <li>Access to organic snack bar</li>
+          <li>Shared restrooms (bio-clean)</li>
+          <li>Coast Guard certified crossing</li>
+        </ul>
+        <div class="deck-footer">
+          <div>
+            <span class="deck-price-from">One way from</span>
+            <span class="deck-price-num">₹1,100</span>
+          </div>
+          <a href="#cta" class="deck-book">Book</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="deck-card fade-in" style="transition-delay:0.2s">
+      <div class="deck-img-wrap">
+        <img class="deck-img" src="https://images.unsplash.com/photo-1468078809804-4c7b3e60a478?w=600&q=80" alt="Deluxe Class">
+        <div class="deck-badge deluxe">Deluxe</div>
+      </div>
+      <div class="deck-body">
+        <div class="deck-class">Middle Deck</div>
+        <div class="deck-name">Deluxe Class</div>
+        <p class="deck-desc">Wider seats, panoramic ocean windows, and complimentary organic refreshments. The most popular choice among eco-travellers.</p>
+        <ul class="deck-features">
+          <li>Extra-wide reclining seats</li>
+          <li>Ocean-view window seating</li>
+          <li>Complimentary herbal tea & fruit</li>
+          <li>Priority boarding & disembarkation</li>
+          <li>Dedicated eco-restroom</li>
+        </ul>
+        <div class="deck-footer">
+          <div>
+            <span class="deck-price-from">One way from</span>
+            <span class="deck-price-num">₹1,700</span>
+          </div>
+          <a href="#cta" class="deck-book">Book</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="deck-card fade-right" style="transition-delay:0.3s">
+      <div class="deck-img-wrap">
+        <img class="deck-img" src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=600&q=80" alt="Panoramic Deck">
+        <div class="deck-badge premium">Panoramic</div>
+      </div>
+      <div class="deck-body">
+        <div class="deck-class">Open Bow Deck</div>
+        <div class="deck-name">Panoramic Deck</div>
+        <p class="deck-desc">The front open-air deck — feel the wind, watch dolphins, and photograph the Andaman sunrise. The most immersive ocean crossing available anywhere.</p>
+        <ul class="deck-features">
+          <li>Open-air bow deck, 270° views</li>
+          <li>Cushioned lounge chairs</li>
+          <li>Complimentary organic breakfast box</li>
+          <li>Exclusive green sundowner bar</li>
+          <li>First to board, first to step ashore</li>
+        </ul>
+        <div class="deck-footer">
+          <div>
+            <span class="deck-price-from">One way from</span>
+            <span class="deck-price-num">₹2,400</span>
+          </div>
+          <a href="#cta" class="deck-book">Book</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section class="amenities-section">
+  <div class="fade-in">
+    <div class="section-tag">On-Board Experience</div>
+    <div class="section-title">Everything Aboard<br><em>Green Ocean</em></div>
+  </div>
+  <div class="amenities-grid">
+    <div class="amenity-card fade-in" style="transition-delay:0.1s">
+      <span class="amenity-icon">🌿</span>
+      <div class="amenity-title">Eco Certification</div>
+      <p class="amenity-desc">India's first Andaman ferry with an active eco-certification — low-emission engines, coral-safe fuel, and zero single-use plastic on board.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.15s">
+      <span class="amenity-icon">🥤</span>
+      <div class="amenity-title">Organic Snack Bar</div>
+      <p class="amenity-desc">Fresh coconut water, local fruit, herbal teas, and island-sourced snacks. No packaged junk. Every item served in compostable packaging.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.2s">
+      <span class="amenity-icon">🌅</span>
+      <div class="amenity-title">Bow Deck Sunrise</div>
+      <p class="amenity-desc">The open bow deck at 7 AM offers one of the most stunning sunrises on the Andaman Sea — warm gold over turquoise water, no crowds.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.25s">
+      <span class="amenity-icon">🐬</span>
+      <div class="amenity-title">Dolphin Watch Zone</div>
+      <p class="amenity-desc">Green Ocean's designated bow observation zone lets passengers spot spinner dolphins and flying fish that regularly accompany the vessel.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.3s">
+      <span class="amenity-icon">🌬️</span>
+      <div class="amenity-title">Full AC Interior</div>
+      <p class="amenity-desc">All enclosed decks are fully air-conditioned with energy-efficient systems. Cool, clean, and quiet — perfect for the 2-hour crossing.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.35s">
+      <span class="amenity-icon">🛡️</span>
+      <div class="amenity-title">Coast Guard Certified</div>
+      <p class="amenity-desc">Certified by the Indian Coast Guard. All life-saving equipment is regularly inspected, and trained crew conduct a safety briefing before every departure.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.4s">
+      <span class="amenity-icon">♿</span>
+      <div class="amenity-title">Accessibility Friendly</div>
+      <p class="amenity-desc">Green Ocean has dedicated accessible boarding, ramp access, and priority seating for elderly passengers, differently-abled travellers, and families with infants.</p>
+    </div>
+    <div class="amenity-card fade-in" style="transition-delay:0.45s">
+      <span class="amenity-icon">📵</span>
+      <div class="amenity-title">Silent Reef Zones</div>
+      <p class="amenity-desc">Engine noise is minimised as the vessel crosses known coral reef zones — reducing underwater sound pollution. A quiet, conscious crossing through living ecosystems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUSIONS -->
+<section class="inclusions-section">
+  <div class="fade-in">
+    <div class="section-tag">What to Know</div>
+    <div class="section-title">What's in Your<br><em>Ticket</em> & What's Not</div>
+  </div>
+  <div class="inc-grid">
+    <div class="fade-left" style="transition-delay:0.1s">
+      <div class="inc-col-title green">✦ Included in All Tickets</div>
+      <ul class="inc-list">
+        <li><div class="inc-dot yes">✓</div>One-way ferry crossing on selected route</div></li>
+        <li><div class="inc-dot yes">✓</div>Seated passage on chosen deck class</li>
+        <li><div class="inc-dot yes">✓</div>Life jacket & pre-departure safety briefing</li>
+        <li><div class="inc-dot yes">✓</div>Access to organic snack bar (Economy pay-per-item)</li>
+        <li><div class="inc-dot yes">✓</div>Complimentary herbal tea & fruit (Deluxe & Panoramic)</li>
+        <li><div class="inc-dot yes">✓</div>Organic breakfast box (Panoramic class only)</li>
+        <li><div class="inc-dot yes">✓</div>Luggage storage in lower bay</li>
+        <li><div class="inc-dot yes">✓</div>Eco-wristband — supports Andaman reef conservation</li>
+        <li><div class="inc-dot yes">✓</div>Coast Guard certified & insured crossing</li>
+      </ul>
+    </div>
+    <div class="fade-right" style="transition-delay:0.2s">
+      <div class="inc-col-title red">✦ Not Included</div>
+      <ul class="inc-list">
+        <li><div class="inc-dot no">✗</div>Hotel or resort transfers to/from jetty</li>
+        <li><div class="inc-dot no">✗</div>Return ticket (must be booked separately)</li>
+        <li><div class="inc-dot no">✗</div>Island entry fees or permits</li>
+        <li><div class="inc-dot no">✗</div>Food for Economy class beyond snack bar purchases</li>
+        <li><div class="inc-dot no">✗</div>Travel or trip insurance</li>
+        <li><div class="inc-dot no">✗</div>Porter or luggage handling</li>
+        <li><div class="inc-dot no">✗</div>Any island sightseeing or activity</li>
+        <li><div class="inc-dot no">✗</div>Wi-Fi (not available on this vessel)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE TABLE -->
+<section class="schedule-section">
+  <div class="fade-in">
+    <div class="section-tag">Sailing Schedule</div>
+    <div class="section-title">Daily Green Ocean<br><em>Timings</em></div>
+  </div>
+  <table class="schedule-table fade-in" style="transition-delay:0.2s">
+    <thead>
+      <tr>
+        <th>Route</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Duration</th>
+        <th>Days</th>
+        <th>Availability</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Port Blair <span class="route-arrow">→</span> Havelock</td>
+        <td>07:00 AM</td>
+        <td>~09:00 AM</td>
+        <td>~2 hrs</td>
+        <td>Daily</td>
+        <td><span class="status-badge available">Available</span></td>
+      </tr>
+      <tr>
+        <td>Port Blair <span class="route-arrow">→</span> Neil Island</td>
+        <td>07:00 AM</td>
+        <td>~10:00 AM</td>
+        <td>~3 hrs</td>
+        <td>Daily</td>
+        <td><span class="status-badge available">Available</span></td>
+      </tr>
+      <tr>
+        <td>Havelock <span class="route-arrow">→</span> Neil Island</td>
+        <td>09:20 AM</td>
+        <td>~10:10 AM</td>
+        <td>~50 min</td>
+        <td>Daily</td>
+        <td><span class="status-badge limited">Limited Seats</span></td>
+      </tr>
+      <tr>
+        <td>Neil Island <span class="route-arrow">→</span> Havelock</td>
+        <td>01:30 PM</td>
+        <td>~02:20 PM</td>
+        <td>~50 min</td>
+        <td>Daily</td>
+        <td><span class="status-badge available">Available</span></td>
+      </tr>
+      <tr>
+        <td>Havelock <span class="route-arrow">→</span> Port Blair</td>
+        <td>02:40 PM</td>
+        <td>~04:40 PM</td>
+        <td>~2 hrs</td>
+        <td>Daily</td>
+        <td><span class="status-badge limited">Limited Seats</span></td>
+      </tr>
+      <tr>
+        <td>Neil Island <span class="route-arrow">→</span> Port Blair</td>
+        <td>01:30 PM</td>
+        <td>~04:40 PM</td>
+        <td>~3 hrs 10 min</td>
+        <td>Daily</td>
+        <td><span class="status-badge available">Available</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:24px; font-size:12px; color:var(--light); font-weight:300;">* Timings are subject to sea conditions and weather. Report at Haddo Jetty 30 minutes before departure. Carry valid photo ID. Schedule updated 2025.</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="fade-in">
+    <div class="section-tag">Passenger Reviews</div>
+    <div class="section-title">What Travelers Say<br>About <em>Green Ocean</em></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card fade-in" style="transition-delay:0.1s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The organic breakfast box on the Panoramic Deck was a lovely surprise — fresh banana, coconut ladoo, and local tea. And we spotted three dolphins at the reef zone. Truly special ferry!"</p>
+      <div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Ananya Iyer</div><div class="testi-loc">Bengaluru, Karnataka</div></div></div>
+    </div>
+    <div class="testi-card fade-in" style="transition-delay:0.2s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"As someone who cares deeply about the environment, Green Ocean was the only choice for me in Andaman. No plastic, coral-safe route, and the crew was incredibly knowledgeable and kind."</p>
+      <div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Madhav Krishnan</div><div class="testi-loc">Kochi, Kerala</div></div></div>
+    </div>
+    <div class="testi-card fade-in" style="transition-delay:0.3s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Nadaman booked our Green Ocean tickets along with the 4N5D package — seamless! The bow deck crossing from Havelock to Neil at golden hour was the highlight of our entire trip to Andaman."</p>
+      <div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rohit & Simran</div><div class="testi-loc">Gorakhpur, UP</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES STRIP -->
+<section class="packages-strip">
+  <div class="strip-inner fade-in">
+    <div>
+      <div class="section-tag" style="margin-bottom:10px;">Bundle & Save</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--black);">Green Ocean included in all <em style="color:var(--accent);">Andaman Packages</em></div>
+    </div>
+    <div class="strip-links">
+      <a href="andaman-package.html" class="strip-btn">3N4D — ₹16,999</a>
+      <a href="andaman-4n5d-package.html" class="strip-btn">4N5D — ₹21,999</a>
+      <a href="andaman-5n6d-package.html" class="strip-btn">5N6D — ₹27,999</a>
+      <a href="mv-nautika-ferry.html" class="strip-btn">MV Nautika Ferry</a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="fade-left">
+      <div class="section-tag">Book Your Ferry</div>
+      <div class="section-title">Reserve Your Seat<br>on <em>Green Ocean</em></div>
+      <div class="contact-info">
+        <div><div class="info-label">📍 Departure Jetty</div><div class="info-value">Haddo Jetty, Port Blair,<br>Andaman — 744102</div></div>
+        <div><div class="info-label">📞 Booking & Enquiry</div><div class="info-value">+91 98765 43210</div></div>
+        <div><div class="info-label">✉️ Email</div><div class="info-value">hello@nadamantours.com</div></div>
+        <div><div class="info-label">⏰ Important Note</div><div class="info-value">Arrive 30 mins before sailing<br><span style="font-size:14px;color:var(--mid);font-family:'Jost'">Carry valid photo ID · No single-use plastic</span></div></div>
+      </div>
+    </div>
+    <div class="fade-right">
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" placeholder="Your name" required></div>
+          <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input type="tel" class="form-input" placeholder="+91 00000 00000"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="you@example.com" required></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Travel Date</label><input type="date" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Route</label>
+            <select class="form-select">
+              <option value="">Select route</option>
+              <option>Port Blair → Havelock</option>
+              <option>Port Blair → Neil Island</option>
+              <option>Havelock → Neil Island</option>
+              <option>Neil Island → Havelock</option>
+              <option>Havelock → Port Blair</option>
+              <option>Neil Island → Port Blair</option>
+              <option>Round Trip (Port Blair ↔ Havelock)</option>
+              <option>Round Trip (Port Blair ↔ Neil)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Deck Class</label>
+            <select class="form-select">
+              <option value="">Select class</option>
+              <option>Economy — ₹1,100</option>
+              <option>Deluxe — ₹1,700</option>
+              <option>Panoramic Deck — ₹2,400</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">No. of Passengers</label>
+            <select class="form-select">
+              <option value="">Select</option>
+              <option>1 Person</option>
+              <option>2 Persons</option>
+              <option>3–4 Persons</option>
+              <option>5–6 Persons</option>
+              <option>7–10 Persons</option>
+              <option>10+ Persons</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Special Requests</label>
+          <textarea class="form-textarea" placeholder="Wheelchair access, infant on board, anniversary celebration, window seat preference..."></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="submitBtn">Book Green Ocean</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <a href="nadaman-tour.html" class="footer-logo">Nada<span>man</span> Tours</a>
+      <p class="footer-about">Crafting extraordinary travel experiences since 2014. Your dream destination is just one call away.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="nadaman-tour.html#destinations">Destinations</a></li>
+        <li><a href="nadaman-tour.html#packages">All Packages</a></li>
+        <li><a href="#route">Ferry Route</a></li>
+        <li><a href="#classes">Deck Classes</a></li>
+        <li><a href="#cta">Book Now</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Ferries & Packages</div>
+      <ul class="footer-links">
+        <li><a href="mv-nautika-ferry.html">MV Nautika Ferry</a></li>
+        <li><a href="andaman-package.html">Andaman 3N4D</a></li>
+        <li><a href="andaman-4n5d-package.html">Andaman 4N5D</a></li>
+        <li><a href="andaman-5n6d-package.html">Andaman 5N6D</a></li>
+        <li><a href="#">Dubai 6D Package</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Follow Us</div>
+      <ul class="footer-links">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nadaman Tours & Travels. All rights reserved.</span>
+    <span>🌿 Sail green. Protect the ocean.</span>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 2200);
+  });
+
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx-5}px,${my-5}px)`;
+  });
+  (function animRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(animRing);
+  })();
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', scrollY > 50);
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in,.fade-left,.fade-right').forEach(el => obs.observe(el));
+
+  const stops = document.querySelectorAll('.route-stop');
+  const stopObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        stops.forEach(s => s.classList.remove('active'));
+        e.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+  stops.forEach(s => stopObs.observe(s));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Booking Seat...';
+    btn.style.background = '#888';
+    setTimeout(() => {
+      btn.textContent = '✓ Seat Reserved! We\'ll Confirm Shortly';
+      btn.style.background = '#1a6b4a';
+      setTimeout(() => {
+        btn.textContent = 'Book Green Ocean';
+        btn.style.background = '';
+        e.target.reset();
+      }, 4000);
+    }, 1600);
+  }
+</script>
+</body>
+</html>
