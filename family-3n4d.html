@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andaman 3N4D Package — Andaman Tours</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --mid: #555;
+    --light: #999;
+    --border: #e8e4df;
+    --accent: #c8a96e;
+    --accent-light: #f5efe4;
+    --white: #ffffff;
+    --teal: #0d7a8a;
+    --teal-light: #e8f4f6;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+  /* Cursor */
+  .cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; opacity: 0.6; }
+
+  /* Fade animations */
+  .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .fade-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-left.visible { opacity: 1; transform: translateX(0); }
+  .fade-right { opacity: 0; transform: translateX(40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.4s, padding 0.4s; }
+  nav.scrolled { border-color: var(--border); padding: 16px 60px; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 1px; color: var(--black); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--black) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 2px; }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--accent) !important; }
+
+  /* PAGE HERO */
+  .pkg-hero { min-height: 92vh; display: flex; align-items: center; position: relative; overflow: hidden; background: var(--white); padding: 120px 60px 80px; }
+  .hero-bg-shape { position: absolute; right: 0; top: 0; bottom: 0; width: 48%; background: var(--teal-light); clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%); z-index: 0; }
+  .hero-img-main { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 38%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; z-index: 1; box-shadow: 0 40px 80px rgba(0,0,0,0.14); animation: heroFloat 6s ease-in-out infinite; }
+  .hero-img-badge { position: absolute; right: 5%; bottom: 18%; z-index: 2; background: var(--white); border-radius: 4px; padding: 18px 24px; box-shadow: 0 16px 40px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 14px; animation: heroFloat 6s ease-in-out infinite 1s; }
+  .badge-icon { font-size: 26px; }
+  .badge-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); }
+  .badge-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--black); margin-top: 2px; }
+  @keyframes heroFloat { 0%,100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-10px); } }
+  .hero-content { position: relative; z-index: 2; max-width: 560px; }
+  .breadcrumb { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); margin-bottom: 28px; animation: fadeInDown 0.9s ease 0.2s both; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb span { color: var(--border); }
+  @keyframes fadeInDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .pkg-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 20px; animation: fadeInDown 0.9s ease 0.3s both; }
+  .pkg-tag::before { content: ''; display: block; width: 28px; height: 1px; background: var(--teal); }
+  .pkg-hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(46px, 5.5vw, 78px); font-weight: 300; line-height: 1.05; color: var(--black); margin-bottom: 24px; animation: fadeInUp 0.9s ease 0.4s both; }
+  .pkg-hero-title em { font-style: italic; color: var(--accent); }
+  .pkg-hero-desc { font-size: 15px; font-weight: 300; line-height: 1.9; color: var(--mid); max-width: 400px; margin-bottom: 36px; animation: fadeInUp 0.9s ease 0.5s both; }
+  .pkg-meta-row { display: flex; gap: 32px; margin-bottom: 40px; animation: fadeInUp 0.9s ease 0.6s both; flex-wrap: wrap; }
+  .meta-chip { display: flex; align-items: center; gap: 8px; }
+  .meta-chip-icon { font-size: 16px; }
+  .meta-chip-text { font-size: 12px; letter-spacing: 1px; color: var(--mid); }
+  .meta-chip-text strong { display: block; font-size: 13px; font-weight: 500; color: var(--black); letter-spacing: 0; }
+  .hero-price-row { display: flex; align-items: center; gap: 28px; animation: fadeInUp 0.9s ease 0.7s both; }
+  .hero-price { font-family: 'Cormorant Garamond', serif; }
+  .hero-price-from { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); display: block; }
+  .hero-price-num { font-size: 42px; font-weight: 600; color: var(--black); line-height: 1; }
+  .hero-price-per { font-size: 13px; color: var(--light); }
+  .btn-book { background: var(--black); color: var(--white); padding: 16px 40px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; border: none; border-radius: 2px; cursor: none; transition: all 0.3s; text-decoration: none; display: inline-block; }
+  .btn-book:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.35); }
+  .scroll-hint { position: absolute; bottom: 40px; right: 60px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); animation: fadeInUp 1s ease 1s both; }
+  .scroll-line { width: 1px; height: 46px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+
+  /* GALLERY */
+  .gallery-section { padding: 100px 60px; background: var(--white); }
+  .section-tag { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 16px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4vw, 54px); font-weight: 300; line-height: 1.1; color: var(--black); margin-bottom: 60px; }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .gallery-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 16px; }
+  .gallery-item { overflow: hidden; border-radius: 4px; cursor: none; }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.5s; filter: saturate(0.85); display: block; }
+  .gallery-item:hover .gallery-img { transform: scale(1.07); filter: saturate(1.1); }
+
+  /* ITINERARY */
+  .itinerary-section { padding: 100px 60px; background: var(--accent-light); }
+  .itin-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; align-items: start; margin-top: 60px; }
+  .itin-sidebar { position: sticky; top: 100px; }
+  .itin-summary-card { background: var(--white); border-radius: 4px; padding: 36px; border: 1px solid var(--border); margin-bottom: 24px; }
+  .itin-summary-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 24px; color: var(--black); }
+  .summary-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .summary-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; font-weight: 300; color: var(--mid); line-height: 1.6; }
+  .summary-list li::before { content: '✓'; color: var(--accent); font-size: 14px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+  .sidebar-price-card { background: var(--black); color: var(--white); border-radius: 4px; padding: 32px; text-align: center; }
+  .sp-from { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--light); }
+  .sp-num { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 600; color: var(--white); line-height: 1.1; margin: 8px 0 4px; }
+  .sp-per { font-size: 12px; color: var(--light); margin-bottom: 24px; }
+  .btn-book-white { display: block; background: var(--accent); color: var(--white); padding: 14px 28px; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: all 0.3s; cursor: none; }
+  .btn-book-white:hover { background: var(--white); color: var(--black); transform: translateY(-2px); }
+
+  .day-cards { display: flex; flex-direction: column; gap: 0; }
+  .day-card { border-left: 2px solid var(--border); padding: 0 0 48px 36px; position: relative; transition: border-color 0.4s; }
+  .day-card:last-child { padding-bottom: 0; }
+  .day-card::before { content: ''; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--border); border: 2px solid var(--white); transition: background 0.4s; }
+  .day-card.active::before { background: var(--accent); }
+  .day-card.active { border-color: var(--accent); }
+  .day-num { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 8px; }
+  .day-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--black); margin-bottom: 16px; }
+  .day-body { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 20px; }
+  .day-activities { display: flex; flex-wrap: wrap; gap: 10px; }
+  .activity-tag { background: var(--white); border: 1px solid var(--border); padding: 6px 14px; border-radius: 2px; font-size: 11px; letter-spacing: 1px; color: var(--mid); display: flex; align-items: center; gap: 6px; }
+  .day-img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin-bottom: 20px; filter: saturate(0.88); transition: filter 0.4s; }
+  .day-card:hover .day-img { filter: saturate(1); }
+
+  /* HIGHLIGHTS */
+  .highlights-section { padding: 100px 60px; background: var(--white); }
+  .highlights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 60px; }
+  .highlight-card { background: var(--white); border: 1px solid var(--border); padding: 44px 36px; transition: all 0.4s; cursor: none; position: relative; overflow: hidden; }
+  .highlight-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
+  .highlight-card:hover::after { transform: scaleX(1); }
+  .highlight-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); border-color: transparent; }
+  .hl-icon { font-size: 36px; margin-bottom: 24px; display: block; }
+  .hl-num { font-family: 'Cormorant Garamond', serif; font-size: 12px; letter-spacing: 2px; color: var(--accent); margin-bottom: 14px; font-weight: 600; }
+  .hl-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--black); margin-bottom: 14px; }
+  .hl-desc { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--mid); }
+
+  /* INCLUSIONS */
+  .inclusions-section { padding: 100px 60px; background: var(--black); }
+  .inclusions-section .section-title { color: var(--white); margin-bottom: 60px; }
+  .inc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .inc-col-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #1e1e1e; }
+  .inc-col-title.green { color: #5fbb8a; }
+  .inc-col-title.red { color: #e07070; }
+  .inc-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .inc-list li { display: flex; align-items: flex-start; gap: 14px; font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.7); line-height: 1.7; }
+  .inc-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+  .inc-dot.yes { background: rgba(95,187,138,0.15); color: #5fbb8a; }
+  .inc-dot.no { background: rgba(224,112,112,0.15); color: #e07070; }
+
+  /* TESTIMONIALS */
+  .testi-section { padding: 100px 60px; background: var(--accent-light); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .testi-card { background: var(--white); border: 1px solid var(--border); padding: 40px 36px; border-radius: 4px; transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s; cursor: none; }
+  .testi-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+  .testi-stars { color: var(--accent); font-size: 14px; letter-spacing: 3px; margin-bottom: 20px; }
+  .testi-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; font-style: italic; color: var(--black); line-height: 1.75; margin-bottom: 28px; }
+  .testi-author { display: flex; align-items: center; gap: 14px; }
+  .testi-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--white); font-weight: 600; flex-shrink: 0; }
+  .testi-name { font-size: 14px; font-weight: 500; color: var(--black); }
+  .testi-loc { font-size: 11px; color: var(--light); margin-top: 2px; }
+
+  /* CTA SECTION */
+  .cta-section { padding: 100px 60px; background: var(--white); }
+  .cta-inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: 100px; align-items: start; }
+  .info-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+  .info-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--black); line-height: 1.4; }
+  .contact-info { margin-top: 40px; display: flex; flex-direction: column; gap: 28px; }
+  .contact-form { display: flex; flex-direction: column; gap: 22px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--light); font-weight: 500; }
+  .form-input, .form-select, .form-textarea { border: none; border-bottom: 1px solid var(--border); padding: 14px 0; font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 300; color: var(--black); background: transparent; outline: none; transition: border-color 0.3s; width: 100%; cursor: none; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--border); }
+  .form-textarea { resize: none; height: 90px; }
+  .form-submit { background: var(--black); color: var(--white); border: none; padding: 18px 48px; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: none; border-radius: 2px; align-self: flex-start; transition: all 0.3s; }
+  .form-submit:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,169,110,0.3); }
+
+  /* FOOTER */
+  footer { background: var(--black); color: var(--white); padding: 80px 60px 40px; }
+  .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; padding-bottom: 60px; border-bottom: 1px solid #1e1e1e; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--white); margin-bottom: 20px; display: block; text-decoration: none; }
+  .footer-logo span { color: var(--accent); }
+  .footer-about { font-size: 13px; font-weight: 300; line-height: 1.9; color: var(--light); max-width: 260px; }
+  .footer-col-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--white); font-weight: 500; margin-bottom: 28px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .footer-links a { font-size: 13px; font-weight: 300; color: var(--light); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #444; }
+
+  /* Loader */
+  .page-loader { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; transition: opacity 0.8s ease, visibility 0.8s ease; }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 600; color: var(--black); animation: pulse 1.5s ease-in-out infinite; }
+  .loader-logo span { color: var(--accent); }
+  .loader-bar { width: 200px; height: 1px; background: var(--border); position: relative; overflow: hidden; }
+  .loader-bar::after { content: ''; position: absolute; inset: 0; background: var(--accent); animation: loadBar 1.8s ease forwards; }
+  @keyframes loadBar { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .pkg-hero { padding: 120px 24px 80px; min-height: auto; }
+    .hero-bg-shape, .hero-img-main, .hero-img-badge, .scroll-hint { display: none; }
+    .gallery-section, .itinerary-section, .highlights-section, .inclusions-section, .testi-section, .cta-section { padding: 70px 24px; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:first-child { grid-row: auto; grid-column: 1 / 3; height: 240px; }
+    .itin-grid { grid-template-columns: 1fr; gap: 40px; }
+    .itin-sidebar { position: static; }
+    .highlights-grid { grid-template-columns: 1fr 1fr; }
+    .inc-grid { grid-template-columns: 1fr; gap: 40px; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .cta-inner { grid-template-columns: 1fr; gap: 50px; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 36px; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+    .pkg-meta-row { gap: 20px; }
+    .hero-price-row { flex-wrap: wrap; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div class="page-loader" id="loader">
+  <div class="loader-logo">Anda<span>man</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="Andaman-tour.html" class="nav-logo">Anda<span>man</span> Tours</a>
+  <ul class="nav-links">
+    <li><a href="Andaman-tour.html#destinations">Destinations</a></li>
+    <li><a href="Andaman-tour.html#experiences">Experiences</a></li>
+    <li><a href="Andaman-tour.html#packages">Packages</a></li>
+    <li><a href="#cta" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="pkg-hero">
+  <div class="hero-bg-shape"></div>
+  <img class="hero-img-main" src="https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=700&q=85" alt="Andaman Islands">
+  <div class="hero-img-badge">
+    <div class="badge-icon">🏝️</div>
+    <div>
+      <div class="badge-label">Package Type</div>
+      <div class="badge-val">3 Nights · 4 Days</div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="breadcrumb"><a href="Andaman-tour.html">Home</a><span>/</span><a href="Andaman-tour.html#packages">Packages</a><span>/</span>Andaman</div>
+    <div class="pkg-tag">Island Escape</div>
+    <h1 class="pkg-hero-title">Andaman<br><em>Islands</em><br>3N · 4D</h1>
+    <p class="pkg-hero-desc">Crystal-clear turquoise waters, powdery white sands, and coral reefs alive with colour — Andaman is India's most breathtaking island paradise.</p>
+    <div class="pkg-meta-row">
+      <div class="meta-chip"><span class="meta-chip-icon">🗓</span><div class="meta-chip-text"><strong>4 Days / 3 Nights</strong>Duration</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">👥</span><div class="meta-chip-text"><strong>2 – 12 Pax</strong>Group Size</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">🏨</span><div class="meta-chip-text"><strong>3 Star Hotel</strong>Accommodation</div></div>
+      <div class="meta-chip"><span class="meta-chip-icon">✈️</span><div class="meta-chip-text"><strong>Port Blair</strong>Entry Point</div></div>
+    </div>
+    <div class="hero-price-row">
+      <div class="hero-price">
+        <span class="hero-price-from">Starting from</span>
+        <span class="hero-price-num">₹16,999</span>
+        <span class="hero-price-per"> / person</span>
+      </div>
+      <a href="#cta" class="btn-book">Book This Package</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="fade-in">
+    <div class="section-tag">Andaman Visuals</div>
+    <div class="section-title">A Glimpse of<br><em>Paradise</em></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item fade-left" style="transition-delay:0.1s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=700&q=80" alt="Radhanagar Beach">
+    </div>
+    <div class="gallery-item fade-in" style="transition-delay:0.2s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&q=80" alt="Coral Reef">
+    </div>
+    <div class="gallery-item fade-right" style="transition-delay:0.3s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=700&q=80" alt="Snorkeling">
+    </div>
+    <div class="gallery-item fade-in" style="transition-delay:0.35s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&q=80" alt="Beach Sunset">
+    </div>
+    <div class="gallery-item fade-right" style="transition-delay:0.4s">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1468078809804-4c7b3e60a478?w=700&q=80" alt="Tropical Waters">
+    </div>
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section class="itinerary-section" id="itinerary">
+  <div class="fade-in">
+    <div class="section-tag">Day-by-Day Plan</div>
+    <div class="section-title">Your <em>Andaman</em><br>Itinerary</div>
+  </div>
+  <div class="itin-grid">
+
+    <!-- Sidebar -->
+    <div class="itin-sidebar fade-left" style="transition-delay:0.1s">
+      <div class="itin-summary-card">
+        <div class="itin-summary-title">Package Highlights</div>
+        <ul class="summary-list">
+          <li>Cellular Jail visit & Light & Sound show</li>
+          <li>Snorkeling at Elephant Beach, Havelock</li>
+          <li>Radhanagar Beach — Asia's #1 beach</li>
+          <li>Glass-bottom boat ride at North Bay Island</li>
+          <li>Ross Island heritage walk</li>
+          <li>Neil Island day excursion</li>
+          <li>Speed boat inter-island transfers</li>
+          <li>All breakfasts & hotel stays included</li>
+        </ul>
+      </div>
+      <div class="sidebar-price-card">
+        <div class="sp-from">Starting from</div>
+        <div class="sp-num">₹16,999</div>
+        <div class="sp-per">per person (twin sharing)</div>
+        <a href="#cta" class="btn-book-white">Enquire Now</a>
+      </div>
+    </div>
+
+    <!-- Day Cards -->
+    <div class="day-cards fade-right" style="transition-delay:0.2s">
+
+      <div class="day-card active">
+        <div class="day-num">Day 01 · Arrival</div>
+        <div class="day-title">Port Blair — Welcome to Paradise</div>
+        <img class="day-img" src="https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=700&q=80" alt="Port Blair">
+        <p class="day-body">Arrive at Veer Savarkar International Airport, Port Blair. Our representative will greet you and transfer you to your hotel. Post check-in and some rest, head out to the iconic <strong>Cellular Jail</strong> for a powerful Light & Sound show in the evening — a tribute to India's freedom fighters.</p>
+        <div class="day-activities">
+          <div class="activity-tag">✈️ Airport Pickup</div>
+          <div class="activity-tag">🏛️ Cellular Jail</div>
+          <div class="activity-tag">🎭 Light & Sound Show</div>
+          <div class="activity-tag">🏨 Hotel Check-in</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-num">Day 02 · Islands</div>
+        <div class="day-title">Ross Island & North Bay — Sea, History & Coral</div>
+        <img class="day-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&q=80" alt="Snorkeling North Bay">
+        <p class="day-body">After breakfast, board a boat to <strong>Ross Island</strong> — once the administrative capital of British India, now a hauntingly beautiful ruin reclaimed by nature. Continue to <strong>North Bay Island</strong> for snorkeling and a thrilling glass-bottom boat ride over living coral reefs. Return to Port Blair by evening and enjoy a leisurely seafront dinner.</p>
+        <div class="day-activities">
+          <div class="activity-tag">🏝️ Ross Island</div>
+          <div class="activity-tag">🤿 Snorkeling</div>
+          <div class="activity-tag">🐠 Glass-Bottom Boat</div>
+          <div class="activity-tag">🌊 North Bay</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-num">Day 03 · Havelock</div>
+        <div class="day-title">Havelock Island — Asia's Best Beach</div>
+        <img class="day-img" src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=700&q=80" alt="Radhanagar Beach">
+        <p class="day-body">Early morning speed boat to <strong>Havelock Island</strong> (Swaraj Dweep). Check in to your beach resort and head straight to <strong>Radhanagar Beach (Beach No. 7)</strong> — voted Asia's best beach by Time Magazine. Later, explore <strong>Elephant Beach</strong> for more snorkeling and water sports. Spend the night in Havelock amidst the sound of waves.</p>
+        <div class="day-activities">
+          <div class="activity-tag">🚤 Speed Boat</div>
+          <div class="activity-tag">🏖️ Radhanagar Beach</div>
+          <div class="activity-tag">🤿 Elephant Beach</div>
+          <div class="activity-tag">🛶 Water Sports</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-num">Day 04 · Departure</div>
+        <div class="day-title">Neil Island Stop & Fond Farewell</div>
+        <img class="day-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&q=80" alt="Neil Island Sunset">
+        <p class="day-body">Return to Port Blair via <strong>Neil Island</strong> (Shaheed Dweep) for a short stopover. Walk along the natural coral bridge at <strong>Bharatpur Beach</strong> and enjoy fresh coconut water. Continue to Port Blair by afternoon. Post lunch, transfer to the airport for your onward journey — carrying memories of turquoise waters and salty breezes forever.</p>
+        <div class="day-activities">
+          <div class="activity-tag">🌴 Neil Island</div>
+          <div class="activity-tag">🪸 Coral Bridge</div>
+          <div class="activity-tag">🥥 Bharatpur Beach</div>
+          <div class="activity-tag">✈️ Departure</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section class="highlights-section">
+  <div class="fade-in">
+    <div class="section-tag">Why This Package</div>
+    <div class="section-title">What Makes This<br><em>Trip Special</em></div>
+  </div>
+  <div class="highlights-grid">
+    <div class="highlight-card fade-in" style="transition-delay:0.1s">
+      <span class="hl-icon">🤿</span>
+      <div class="hl-num">01</div>
+      <div class="hl-title">World-Class Snorkeling</div>
+      <p class="hl-desc">Dive into crystal waters teeming with colourful fish and live coral — Elephant Beach and North Bay offer some of India's finest snorkeling spots.</p>
+    </div>
+    <div class="highlight-card fade-in" style="transition-delay:0.2s">
+      <span class="hl-icon">🏖️</span>
+      <div class="hl-num">02</div>
+      <div class="hl-title">Asia's Best Beach</div>
+      <p class="hl-desc">Walk the powdery white sands of Radhanagar Beach at golden hour — Time Magazine's pick for Asia's finest beach, and you'll see why instantly.</p>
+    </div>
+    <div class="highlight-card fade-in" style="transition-delay:0.3s">
+      <span class="hl-icon">🏛️</span>
+      <div class="hl-num">03</div>
+      <div class="hl-title">Cellular Jail Experience</div>
+      <p class="hl-desc">Walk through history at the iconic Cellular Jail. The evening Light & Sound show is a deeply moving tribute to India's freedom fighters.</p>
+    </div>
+    <div class="highlight-card fade-in" style="transition-delay:0.35s">
+      <span class="hl-icon">🚤</span>
+      <div class="hl-num">04</div>
+      <div class="hl-title">Island Hopping by Speed Boat</div>
+      <p class="hl-desc">Zip between Ross, Havelock, and Neil islands on fast speed boats — each island uniquely beautiful and culturally distinct from the last.</p>
+    </div>
+    <div class="highlight-card fade-in" style="transition-delay:0.4s">
+      <span class="hl-icon">🌅</span>
+      <div class="hl-num">05</div>
+      <div class="hl-title">Spectacular Sunsets</div>
+      <p class="hl-desc">Andaman sunsets are legendary. Watch the sky turn gold and crimson over the Bay of Bengal — a view that stays with you for a lifetime.</p>
+    </div>
+    <div class="highlight-card fade-in" style="transition-delay:0.45s">
+      <span class="hl-icon">🐢</span>
+      <div class="hl-num">06</div>
+      <div class="hl-title">Rich Marine Life</div>
+      <p class="hl-desc">Sea turtles, reef sharks, manta rays, and hundreds of fish species call these waters home. Every snorkel dive is a living nature documentary.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUSIONS / EXCLUSIONS -->
+<section class="inclusions-section">
+  <div class="fade-in">
+    <div class="section-tag">Package Details</div>
+    <div class="section-title">What's <em>Included</em><br>& What's Not</div>
+  </div>
+  <div class="inc-grid">
+    <div class="fade-left" style="transition-delay:0.1s">
+      <div class="inc-col-title green">✦ Inclusions</div>
+      <ul class="inc-list">
+        <li><div class="inc-dot yes">✓</div>3 nights accommodation (3-star hotels)</li>
+        <li><div class="inc-dot yes">✓</div>Daily breakfast at hotel</li>
+        <li><div class="inc-dot yes">✓</div>All airport & jetty transfers by AC vehicle</li>
+        <li><div class="inc-dot yes">✓</div>Speed boat tickets (Port Blair ↔ Havelock ↔ Neil)</li>
+        <li><div class="inc-dot yes">✓</div>Cellular Jail entry + Light & Sound show</li>
+        <li><div class="inc-dot yes">✓</div>Ross Island & North Bay boat tour</li>
+        <li><div class="inc-dot yes">✓</div>Snorkeling at Elephant Beach (basic gear)</li>
+        <li><div class="inc-dot yes">✓</div>Glass-bottom boat ride at North Bay</li>
+        <li><div class="inc-dot yes">✓</div>Dedicated tour coordinator throughout</li>
+        <li><div class="inc-dot yes">✓</div>All applicable taxes & service charges</li>
+      </ul>
+    </div>
+    <div class="fade-right" style="transition-delay:0.2s">
+      <div class="inc-col-title red">✦ Exclusions</div>
+      <ul class="inc-list">
+        <li><div class="inc-dot no">✗</div>Flights to/from Port Blair (can be arranged separately)</li>
+        <li><div class="inc-dot no">✗</div>Lunches and dinners (unless mentioned)</li>
+        <li><div class="inc-dot no">✗</div>Water sports & adventure activities (scuba, jet ski etc.)</li>
+        <li><div class="inc-dot no">✗</div>Personal expenses & shopping</li>
+        <li><div class="inc-dot no">✗</div>Travel insurance</li>
+        <li><div class="inc-dot no">✗</div>Tips & gratuities</li>
+        <li><div class="inc-dot no">✗</div>Any services not listed above</li>
+        <li><div class="inc-dot no">✗</div>Camera or video charges at monuments</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="fade-in">
+    <div class="section-tag">Traveler Stories</div>
+    <div class="section-title">What Our <em>Andaman</em><br>Travelers Say</div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card fade-in" style="transition-delay:0.1s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Radhanagar Beach at sunset was the most beautiful thing I've ever seen. Andaman handled everything perfectly — truly a stress-free holiday!"</p>
+      <div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sneha Kapoor</div><div class="testi-loc">Pune, Maharashtra</div></div></div>
+    </div>
+    <div class="testi-card fade-in" style="transition-delay:0.2s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Snorkeling at Elephant Beach was surreal — colourful fish all around us! The team was super responsive and the hotels were lovely too."</p>
+      <div class="testi-author"><div class="testi-avatar">V</div><div><div class="testi-name">Vikram Nair</div><div class="testi-loc">Kochi, Kerala</div></div></div>
+    </div>
+    <div class="testi-card fade-in" style="transition-delay:0.3s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"We booked the Andaman 3N4D package for our family trip. Absolutely magical experience — Andaman Tours made it extra special for us!"</p>
+      <div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Riya & Aryan</div><div class="testi-loc">Gorakhpur, UP</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK / CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="fade-left">
+      <div class="section-tag">Book This Package</div>
+      <div class="section-title">Ready for<br><em>Andaman?</em></div>
+      <div class="contact-info">
+        <div><div class="info-label">📍 Office</div><div class="info-value">Andaman Tours, Civil Lines,<br>Gorakhpur, UP — 273001</div></div>
+        <div><div class="info-label">📞 Call / WhatsApp</div><div class="info-value">+91 98765 43210</div></div>
+        <div><div class="info-label">✉️ Email</div><div class="info-value">hello@Andamantours.com</div></div>
+        <div><div class="info-label">💰 Starting Price</div><div class="info-value">₹16,999 per person<br><span style="font-size:14px;color:var(--mid);font-family:'Jost'">Twin sharing basis</span></div></div>
+      </div>
+    </div>
+    <div class="fade-right">
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" placeholder="Your name" required></div>
+          <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input type="tel" class="form-input" placeholder="+91 00000 00000"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="you@example.com" required></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Travel Date</label><input type="date" class="form-input"></div>
+          <div class="form-group"><label class="form-label">No. of Travelers</label><select class="form-select"><option value="">Select</option><option>2 Persons</option><option>3–4 Persons</option><option>5–6 Persons</option><option>7–10 Persons</option><option>10+ Persons</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Special Requirements</label><textarea class="form-textarea" placeholder="Honeymoon, family trip, dietary needs, room preference..."></textarea></div>
+        <button type="submit" class="form-submit" id="submitBtn">Book Andaman Package</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-section-contact">
+      <div>
+        <a href="#" class="footer-logo">Anda<span>man</span> Tours</a>
+        <p class="footer-about">Crafting extraordinary island experiences since 2014. Your tropical paradise is just one call away.</p>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-icon">📍</div>
+        <div class="footer-contact-text">
+          <div class="footer-contact-label">Address</div>
+          <div class="footer-contact-value">House No 17/2, Ward No 1,<br>Sunder Colony, Haddo, Port Blair - 744102</div>
+        </div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-icon">📞</div>
+        <div class="footer-contact-text">
+          <div class="footer-contact-label">Call Us</div>
+          <div class="footer-contact-value"><a href="tel:+919679532700">+91 9679532700</a><br><a href="tel:+918001801275">+91 8001801275</a></div>
+        </div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-icon">📧</div>
+        <div class="footer-contact-text">
+          <div class="footer-contact-label">Email</div>
+          <div class="footer-contact-value"><a href="mailto:info.haldertourntravels@gmail.com">info.haldertourntravels@gmail.com</a></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Destinations</div>
+      <ul class="footer-links">
+        <li><a href="havelock-island.html">Havelock Island</a></li>
+        <li><a href="port-blair.html">Port Blair</a></li>
+        <li><a href="neil-island.html">Neil Island</a></li>
+        <li><a href="radhanagar-beach.html">Radhanagar Beach</a></li>
+        <li><a href="baratang-island.html">Baratang Island</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Tour Packages</div>
+      <ul class="footer-links">
+        <li><a href="honeymoon.html">Honeymoon</a></li>
+        <li><a href="family.html">Family Tours</a></li>
+        <li><a href="group.html">Group Tours</a></li>
+        <li><a href="ltc.html">LTC Packages</a></li>
+        <li><a href="#contact">Custom Packages</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#activities">Water Sports</a></li>
+        <li><a href="#ferries">Ferry Booking</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="https://wa.me/919679532700" target="_blank">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Halder Tours & Travels. All rights reserved.</span>
+    <span>Made with ❤️ by <a href="#" style="color: var(--accent); text-decoration: none;">JR Technology</a></span>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 2000);
+  });
+
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx-5}px,${my-5}px)`;
+  });
+  (function animRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(animRing);
+  })();
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', scrollY > 50);
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in,.fade-left,.fade-right').forEach(el => obs.observe(el));
+
+  // Active day card on scroll
+  const dayCards = document.querySelectorAll('.day-card');
+  const dayObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        dayCards.forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+  dayCards.forEach(c => dayObs.observe(c));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Sending Enquiry...';
+    btn.style.background = '#888';
+    setTimeout(() => {
+      btn.textContent = '✓ Booking Request Sent!';
+      btn.style.background = '#2a7a4b';
+      setTimeout(() => { btn.textContent = 'Book Andaman Package'; btn.style.background = ''; e.target.reset(); }, 3500);
+    }, 1600);
+  }
+</script>
+</body>
+</html>

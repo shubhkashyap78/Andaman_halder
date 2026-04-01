@@ -40,10 +40,19 @@
   .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 1px; color: var(--black); text-decoration: none; }
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; }
+  .nav-item { position: relative; }
+  .nav-links a { font-size: 12px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mid); text-decoration: none; position: relative; transition: color 0.3s; display: flex; align-items: center; gap: 6px; }
   .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
   .nav-links a:hover { color: var(--black); }
   .nav-links a:hover::after { width: 100%; }
+  .dropdown-arrow { font-size: 10px; transition: transform 0.3s; }
+  .nav-item:hover .dropdown-arrow { transform: rotate(180deg); }
+  .dropdown { position: absolute; top: 100%; left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; min-width: 200px; z-index: 200; }
+  .nav-item:hover .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+  .dropdown a { font-size: 11px; letter-spacing: 1px; padding: 12px 20px; color: var(--mid); border-bottom: 1px solid var(--border); display: block; }
+  .dropdown a:last-child { border-bottom: none; }
+  .dropdown a::after { display: none; }
+  .dropdown a:hover { color: var(--accent); background: var(--accent-light); }
   .nav-cta { background: linear-gradient(135deg, var(--accent2) 0%, #1a7a6e 100%) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 2px; }
   .nav-cta::after { display: none !important; }
   .nav-cta:hover { background: linear-gradient(135deg, var(--accent) 0%, #c0552e 100%) !important; }
@@ -307,10 +316,45 @@
 <nav id="navbar">
   <a href="#" class="nav-logo">Anda<span>man</span> Tours</a>
   <ul class="nav-links">
-    <li><a href="#destinations">Destinations</a></li>
-    <li><a href="#experiences">Experiences</a></li>
-    <li><a href="#activities">Activities</a></li>
-    <li><a href="#ferries">Ferries</a></li>
+    <li class="nav-item">
+      <a href="#destinations">Destinations <span class="dropdown-arrow">▼</span></a>
+      <div class="dropdown">
+        <a href="havelock-island.html">Havelock Island</a>
+        <a href="port-blair.html">Port Blair</a>
+        <a href="neil-island.html">Neil Island</a>
+        <a href="radhanagar-beach.html">Radhanagar Beach</a>
+        <a href="baratang-island.html">Baratang Island</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a href="#packages-type">Packages <span class="dropdown-arrow">▼</span></a>
+      <div class="dropdown">
+        <a href="honeymoon.html">Honeymoon Packages</a>
+        <a href="family.html">Family Packages</a>
+        <a href="group.html">Group Packages</a>
+        <a href="ltc.html">LTC Packages</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a href="#activities">Activities <span class="dropdown-arrow">▼</span></a>
+      <div class="dropdown">
+        <a href="scuba-diving.html">Scuba Diving</a>
+        <a href="snorkeling.html">Snorkeling</a>
+        <a href="parasailing.html">Parasailing</a>
+        <a href="jet-ski.html">Jet Ski</a>
+        <a href="banana-ride.html">Banana Ride</a>
+        <a href="kayaking.html">Kayaking</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a href="#ferries">Ferries <span class="dropdown-arrow">▼</span></a>
+      <div class="dropdown">
+        <a href="mv-markruzz-ferry.html">MV Markruzz</a>
+        <a href="#ferries">MV Nautika</a>
+        <a href="#ferries">Green Ocean</a>
+        <a href="#ferries">Ferry Booking</a>
+      </div>
+    </li>
     <li><a href="#testimonials">Reviews</a></li>
     <li><a href="#contact" class="nav-cta">Book Now</a></li>
   </ul>
@@ -320,8 +364,23 @@
 </nav>
 <div class="nav-mobile" id="mobileNav">
   <a href="#destinations" onclick="toggleMenu()">Destinations</a>
-  <a href="#experiences" onclick="toggleMenu()">Experiences</a>
+  <div style="margin-left: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <a href="havelock-island.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Havelock Island</a>
+    <a href="port-blair.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Port Blair</a>
+    <a href="neil-island.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Neil Island</a>
+  </div>
+  <a href="#packages-type" onclick="toggleMenu()">Packages</a>
+  <div style="margin-left: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <a href="honeymoon.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Honeymoon</a>
+    <a href="family.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Family</a>
+    <a href="group.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Group</a>
+  </div>
   <a href="#activities" onclick="toggleMenu()">Activities</a>
+  <div style="margin-left: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <a href="scuba-diving.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Scuba Diving</a>
+    <a href="parasailing.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Parasailing</a>
+    <a href="jet-ski.html" onclick="toggleMenu()" style="font-size: 11px; color: var(--light);">Water Sports</a>
+  </div>
   <a href="#ferries" onclick="toggleMenu()">Ferries</a>
   <a href="#testimonials" onclick="toggleMenu()">Reviews</a>
   <a href="#contact" class="nav-cta" onclick="toggleMenu()">Book Now</a>
@@ -658,13 +717,20 @@
     <div class="footer-section-contact">
       <div>
         <a href="#" class="footer-logo">Anda<span>man</span> Tours</a>
-        <p class="footer-about">Crafting extraordinary island experiences since 2026. Your tropical paradise is just one call away.</p>
+        <p class="footer-about">Crafting extraordinary island experiences since 2014. Your tropical paradise is just one call away.</p>
       </div>
       <div class="footer-contact-item">
         <div class="footer-contact-icon">📍</div>
         <div class="footer-contact-text">
           <div class="footer-contact-label">Address</div>
-          <div class="footer-contact-value">House No 17/2, Ward No 1,<br>Sunder Colony, Haddo,<br>Port Blair, 744102</div>
+          <div class="footer-contact-value">House No 17/2, Ward No 1,<br>Sunder Colony, Haddo, Port Blair - 744102</div>
+        </div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-icon">📞</div>
+        <div class="footer-contact-text">
+          <div class="footer-contact-label">Call Us</div>
+          <div class="footer-contact-value"><a href="tel:+919679532700">+91 9679532700</a><br><a href="tel:+918001801275">+91 8001801275</a></div>
         </div>
       </div>
       <div class="footer-contact-item">
@@ -674,19 +740,42 @@
           <div class="footer-contact-value"><a href="mailto:info.haldertourntravels@gmail.com">info.haldertourntravels@gmail.com</a></div>
         </div>
       </div>
-      <div class="footer-contact-item">
-        <div class="footer-contact-icon">📞</div>
-        <div class="footer-contact-text">
-          <div class="footer-contact-label">Phone</div>
-          <div class="footer-contact-value"><a href="tel:+919679532700">+91 9679532700</a><br><a href="tel:+918001801275">8001801275</a></div>
-        </div>
-      </div>
     </div>
-    <div><div class="footer-col-title">Quick Links</div><ul class="footer-links"><li><a href="#destinations">Destinations</a></li><li><a href="#experiences">Experiences</a></li><li><a href="#activities">Activities</a></li><li><a href="#ferries">Ferries</a></li><li><a href="#contact">Contact Us</a></li></ul></div>
-    <div><div class="footer-col-title">Popular Tours</div><ul class="footer-links"><li><a href="#">Havelock Package</a></li><li><a href="#">Port Blair Tour</a></li><li><a href="#">Neil Island Holiday</a></li><li><a href="#">Island Hopping</a></li><li><a href="#">Beach Retreat</a></li></ul></div>
-    <div><div class="footer-col-title">Follow Us</div><ul class="footer-links"><li><a href="#">Instagram</a></li><li><a href="#">Facebook</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">YouTube</a></li></ul></div>
+    <div>
+      <div class="footer-col-title">Destinations</div>
+      <ul class="footer-links">
+        <li><a href="havelock-island.html">Havelock Island</a></li>
+        <li><a href="port-blair.html">Port Blair</a></li>
+        <li><a href="neil-island.html">Neil Island</a></li>
+        <li><a href="radhanagar-beach.html">Radhanagar Beach</a></li>
+        <li><a href="baratang-island.html">Baratang Island</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Tour Packages</div>
+      <ul class="footer-links">
+        <li><a href="honeymoon.html">Honeymoon</a></li>
+        <li><a href="family.html">Family Tours</a></li>
+        <li><a href="group.html">Group Tours</a></li>
+        <li><a href="ltc.html">LTC Packages</a></li>
+        <li><a href="#contact">Custom Packages</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#activities">Water Sports</a></li>
+        <li><a href="#ferries">Ferry Booking</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="https://wa.me/919679532700" target="_blank">WhatsApp</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 Halder Tours & Travels. Andaman Adventures. All rights reserved.</span><span>Made with ❤️ for JR Technology</span></div>
+  <div class="footer-bottom">
+    <span>© 2024 Halder Tours & Travels. All rights reserved.</span>
+    <span>Made with ❤️ by <a href="#" style="color: var(--accent); text-decoration: none;">JR Technology</a></span>
+  </div>
 </footer>
 
 <script src="script.js"></script>
